@@ -1,7 +1,6 @@
 ﻿namespace EmpresaEnvÍoDto
 {
-    public class Class1
+    public class CompraDto
     {
-
     }
 }

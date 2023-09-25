@@ -1,7 +1,6 @@
 ﻿namespace EmpresaEnvíoData
 {
-    public class Class1
+    public class CamionetaDB
     {
-
     }
 }
