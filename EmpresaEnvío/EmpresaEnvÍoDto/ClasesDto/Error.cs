@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace EmpresaEnvÍoDto.ClasesDto
 {
-    internal class Error
+    public class Error
     {
+        public string ErrorDetail { get; set; }
     }
 }

@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace EmpresaEnvÍoDto.ClasesDto
 {
-    internal class ValidacionDto
+    public class ValidacionDto
     {
+        public bool Resultado { get; set; }
+        public List<Error> Errores { get; set; }
     }
 }
