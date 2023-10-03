@@ -59,13 +59,13 @@ namespace EmpresaEnvíoService
                 validCliente.Errores.Add(new Error() { ErrorDetail = "El cliente a editar no existe" });
                 return validCliente;
             }
-            //Validacion de errores
-
-            if (validCliente.Errores.Count > 0)
-            {
-                return validCliente;
-            }
-            validCliente.Cliente = clienteModificado;
+            clienteAEditar = ModificarCliente(clienteModificado, clienteAEditar);
+            listaClientesDB.RemoveAll(x => x.DNI == clienteAEditar.DNI);
+            listaClientesDB.Add(clienteAEditar);
+            listaClientesDB = listaClientesDB.OrderBy(x => x.FechaCreacion).ToList();
+            archivo.SaveClienteDB(listaClientesDB);
+            // Camibiar datos de ClienteAEdtiar a un ClienteDto
+            //validCliente.Cliente = clienteAEditar
             validCliente.Resultado = true;
             return validCliente;
         }
@@ -81,6 +81,14 @@ namespace EmpresaEnvíoService
                 LatitudGeografica = X.LatitudGeografica,
                 LongitudGeografica = X.LongitudGeografica
             }).ToList());
+        }
+
+
+        private ClienteDB ModificarCliente(ClienteDto ClienteMod, ClienteDB clienteAMod)
+        {
+            clienteAMod.Nombre = string.IsNullOrEmpty(ClienteMod.Nombre) ? clienteAMod.Nombre : clienteAMod.Nombre;
+
+            return clienteAMod;
         }
     }
 }

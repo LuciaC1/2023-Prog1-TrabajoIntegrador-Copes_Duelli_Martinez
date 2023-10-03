@@ -1,25 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace EmpresaEnvÍoDto
+﻿namespace EmpresaEnvÍoDto
 {
     public class ProductoDto
     {
         public int CodProducto { get; set; }
-        [Required(ErrorMessage = "No se cargo el nombre del producto")]
         public string NombreProducto { get; set; }
-        [Required(ErrorMessage = "No se cargo la marca del producto")]
         public string MarcaProducto { get; set; }
-        [Required(ErrorMessage = "No se cargo el alto de la caja")]
         public double AltoCaja { get; set; }
-        [Required(ErrorMessage = "No se cargo el ancho de la caja")]
         public double AnchoCaja { get; set; }
-        [Required(ErrorMessage = "No se cargo la profundidad de la caja")]
         public double ProfundidadCaja { get; set; }
-        [Required(ErrorMessage = "No se cargo el precio unitario")]
         public double PrecioUnitario { get; set; }
-        [Required(ErrorMessage = "No se cargo un stock minimo")]
         public int StockMinimo { get; set; }
-        [Required(ErrorMessage = "No se cargo un stock")]
         public int StockTotal { get; set; }
         public Validacion IsValid()
         {
