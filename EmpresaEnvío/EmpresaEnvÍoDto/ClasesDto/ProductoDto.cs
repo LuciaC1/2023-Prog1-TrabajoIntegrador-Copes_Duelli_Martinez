@@ -1,10 +1,10 @@
-﻿using EmpresaEnvÍoDto.ClasesDto;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace EmpresaEnvÍoDto
 {
     public class ProductoDto
     {
+        public int CodProducto { get; set; }
         [Required(ErrorMessage = "No se cargo el nombre del producto")]
         public string NombreProducto { get; set; }
         [Required(ErrorMessage = "No se cargo la marca del producto")]
@@ -21,9 +21,9 @@ namespace EmpresaEnvÍoDto
         public int StockMinimo { get; set; }
         [Required(ErrorMessage = "No se cargo un stock")]
         public int StockTotal { get; set; }
-        public ValidacionDto IsValid()
+        public Validacion IsValid()
         {
-            ValidacionDto validacion = new ValidacionDto()
+            Validacion validacion = new Validacion()
             {
                 Errores = new List<Error>()
             };

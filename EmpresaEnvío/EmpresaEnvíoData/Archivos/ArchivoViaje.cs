@@ -11,9 +11,9 @@ namespace EmpresaEnvíoData
 
         public ArchivoViaje()
         {
-            string filePath = AppDomain.CurrentDomain.BaseDirectory + "Files";
+            string filePath = AppDomain.CurrentDomain.BaseDirectory + "Archivos";
             Directory.CreateDirectory(filePath);
-            pathArchivo = filePath + "\\Archivo.json";
+            pathArchivo = filePath + "\\viajes.json";
         }
 
         #endregion Constructor

@@ -15,52 +15,71 @@ namespace EmpresaEnvíoService
             List<ClienteDB> listaClientes = archivo.GetClienteDBList();
             ClienteDB clienteDB = new ClienteDB()
             {
-                DNI=clienteDto.DNI,
+                DNI = clienteDto.DNI,
                 Nombre = clienteDto.Nombre,
                 Apellido = clienteDto.Apellido,
                 Email = clienteDto.Email,
                 Telefono = clienteDto.Telefono,
-                LatitudGeografica=clienteDto.LatitudGeografica,
-                FechaNacimiento=clienteDto.FechaNacimiento,
-                FechaCreacion=DateTime.Now,
+                LatitudGeografica = clienteDto.LatitudGeografica,
+                LongitudGeografica = clienteDto.LongitudGeografica,
+                FechaNacimiento = clienteDto.FechaNacimiento,
+                FechaCreacion = DateTime.Now,
             };
             listaClientes.Add(clienteDB);
             archivo.SaveClienteDB(listaClientes);
             return clienteDto;
         }
-        public bool EliminarCliente(int dni)
+        public Validacion EliminarCliente(int dni)
         {
+            Validacion validacion = new Validacion();
             List<ClienteDB> listaClientesDB = archivo.GetClienteDBList();
             ClienteDB cliente = listaClientesDB.FirstOrDefault(x => x.DNI == dni);
             if (cliente == null)
             {
-                return false;
+                validacion.Errores.Add(new Error() { ErrorDetail = "El cliente a eliminar no existe" });
+                return validacion;
+            }
+            if (cliente.FechaEliminacion != DateTime.MinValue)
+            {
+                validacion.Errores.Add(new Error() { ErrorDetail = "El cliente ya ha sido eliminado previamente" });
+                return validacion;
             }
             listaClientesDB.FirstOrDefault(x => x.DNI == dni).FechaEliminacion = DateTime.Now;
             archivo.SaveClienteDB(listaClientesDB);
-            return true;
+            validacion.Resultado = true;
+            return validacion;
         }
-        public ClienteDto EditarCliente(ClienteDto clienteModificado)
+        public ValidacionModCliente EditarCliente(ClienteDto clienteModificado)
         {
+            ValidacionModCliente validCliente = new ValidacionModCliente();
             List<ClienteDB> listaClientesDB = archivo.GetClienteDBList();
-            if (listaClientesDB.Any(u => u.DNI == clienteModificado.DNI))
+            var clienteAEditar = listaClientesDB.FirstOrDefault(u => u.DNI == clienteModificado.DNI);
+            if (clienteAEditar == default && clienteAEditar.FechaEliminacion != DateTime.MinValue)
             {
-                var clienteAEditar = listaClientesDB.Find(u => u.DNI == clienteModificado.DNI);
-                //Falta esto
-                return clienteModificado;
+                validCliente.Errores.Add(new Error() { ErrorDetail = "El cliente a editar no existe" });
+                return validCliente;
             }
-            return null;
+            //Validacion de errores
+
+            if (validCliente.Errores.Count > 0)
+            {
+                return validCliente;
+            }
+            validCliente.Cliente = clienteModificado;
+            validCliente.Resultado = true;
+            return validCliente;
         }
         public List<ClienteDto> ObtenerListadoClientes()
         {
             return (archivo.GetClienteDBList().Select(X => new ClienteDto()
-            {  
-                DNI=X.DNI,
+            {
+                DNI = X.DNI,
                 Nombre = X.Nombre,
                 Apellido = X.Apellido,
                 Email = X.Email,
                 Telefono = X.Telefono,
-                LatitudGeografica = X.LatitudGeografica
+                LatitudGeografica = X.LatitudGeografica,
+                LongitudGeografica = X.LongitudGeografica
             }).ToList());
         }
     }

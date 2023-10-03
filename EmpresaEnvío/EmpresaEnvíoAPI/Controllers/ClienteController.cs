@@ -10,18 +10,21 @@ namespace EmpresaEnvíoAPI.Controllers
     {
         ClienteService service;
 
-        ClienteController()
+        public ClienteController()
         {
             service = new ClienteService();
         }
         [HttpPost("")]
         public IActionResult CrearNuevoCliente([FromBody] ClienteDto clienteDto)
         {
-            var clienteNuevo = service.CrearCliente(clienteDto);
-            //Aca tengo la duda con la validacion, porque no se bien como funciona el required, si te tira el error y te la corta nomas tendria que tirar el ok y el cliente nuevo
-            if (clienteNuevo.IsValid)
+            if (!ModelState.IsValid)
             {
-                return BadRequest("Error en crear suscripcion");
+                return BadRequest(ModelState);
+            }
+            var clienteNuevo = service.CrearCliente(clienteDto);
+            if (clienteNuevo == null)
+            {
+                return BadRequest("Error en crear cliente");
             }
 
             return Ok(clienteNuevo);
@@ -29,12 +32,12 @@ namespace EmpresaEnvíoAPI.Controllers
         [HttpPut("")]
         public IActionResult ActualizarCliente([FromBody] ClienteDto clienteModificado)
         {
-            var clienteActualizado= service.EditarCliente(clienteModificado);
+            var clienteActualizado = service.EditarCliente(clienteModificado);
 
-            if (clienteActualizado==null)
+            if (clienteActualizado == null)
             {
                 return BadRequest("No existe el cliente solicitado");
-                
+
             }
 
             return Ok(clienteActualizado);
@@ -44,11 +47,11 @@ namespace EmpresaEnvíoAPI.Controllers
         {
             var eliminarSuscripcionResponse = service.EliminarCliente(dni);
 
-            if (eliminarSuscripcionResponse)
+            if (eliminarSuscripcionResponse.Resultado)
             {
-                return Ok($"Cliente con DNI {dni} eliminadO exitosamente.");
+                return Ok($"Cliente con DNI {dni} eliminado exitosamente");
             }
-            return NotFound($"Cliente con DNI  {dni} no encontradO.");
+            return NotFound($"Cliente con DNI {dni} no encontrado");
         }
         [HttpGet]
         public IActionResult ObtenerListadoClientes()

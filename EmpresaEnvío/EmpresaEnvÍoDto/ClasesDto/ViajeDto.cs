@@ -4,7 +4,7 @@ namespace EmpresaEnvÍoDto
 {
     public class ViajeDto
     {
-        [Required(ErrorMessage ="No se cargo un codigo de viaje")]
+        [Required(ErrorMessage = "No se cargo un codigo de viaje")]
         public int CodigoUnicoViaje { get; set; }
         public int Patente { get; set; }
         [DataType(DataType.DateTime)]

@@ -10,7 +10,7 @@ namespace EmpresaEnvíoAPI.Controllers
     {
         ProductoService service;
 
-        ProductoController()
+        public ProductoController()
         {
             service = new ProductoService();
         }
@@ -25,9 +25,9 @@ namespace EmpresaEnvíoAPI.Controllers
             return BadRequest(productoDto.IsValid().Errores);
         }
         [HttpPut("")]
-        public IActionResult ActualizarStock([FromBody] int codProducto,int stockNuevo )
+        public IActionResult ActualizarStock([FromBody] int codProducto, int stockNuevo)
         {
-            var clienteActualizado = service.ActualizarStock(codProducto,stockNuevo);
+            var clienteActualizado = service.ActualizarStock(codProducto, stockNuevo);
             if (clienteActualizado == null)
             {
                 return BadRequest("No existe el producto a actualizar");

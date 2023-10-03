@@ -13,7 +13,7 @@ namespace EmpresaEnvíoData
         {
             string filePath = AppDomain.CurrentDomain.BaseDirectory + "Archivos";
             Directory.CreateDirectory(filePath);
-            pathArchivo = filePath + "\\cliente.json";
+            pathArchivo = filePath + "\\clientes.json";
         }
 
         #endregion Constructor

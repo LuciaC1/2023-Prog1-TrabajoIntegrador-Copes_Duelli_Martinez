@@ -11,7 +11,7 @@ namespace EmpresaEnvíoData
 
         public ArchivoProducto()
         {
-            string filePath = AppDomain.CurrentDomain.BaseDirectory + "Files";
+            string filePath = AppDomain.CurrentDomain.BaseDirectory + "Archivos";
             Directory.CreateDirectory(filePath);
             pathArchivo = filePath + "\\productos.json";
         }

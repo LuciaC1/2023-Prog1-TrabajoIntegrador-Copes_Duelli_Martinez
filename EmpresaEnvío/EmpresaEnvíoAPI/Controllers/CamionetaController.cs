@@ -9,7 +9,7 @@ namespace EmpresaEnvíoAPI.Controllers
     {
         CamionetaService service;
 
-        CamionetaController()
+        public CamionetaController()
         {
             service = new CamionetaService();
         }
@@ -17,7 +17,7 @@ namespace EmpresaEnvíoAPI.Controllers
         [HttpGet]
         public IActionResult GetCamionetas()
         {
-            return Ok(service.ObtenerListadoCamionetas);
+            return Ok(service.ObtenerListadoCamionetas());
         }
     }
 }
