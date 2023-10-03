@@ -10,59 +10,38 @@ namespace EmpresaEnvíoService
         {
             archivo = new ArchivoProducto();
         }
-        public ProductoDto AñadirProducto(ProductoDto productoDto)
+        public ProductoDB AñadirProducto(ProductoDto productoDto)
         {
             List<ProductoDB> listaProductos = archivo.GetProductoDBList();
             ProductoDB productoDB = new ProductoDB()
             {
-                Nombre
-                DNI = clienteDto.DNI,
-                Nombre = clienteDto.Nombre,
-                Apellido = clienteDto.Apellido,
-                Email = clienteDto.Email,
-                Telefono = clienteDto.Telefono,
-                LatitudGeografica = clienteDto.LatitudGeografica,
-                FechaNacimiento = clienteDto.FechaNacimiento,
-                FechaCreacion = DateTime.Now,
+                CodProducto=listaProductos.Count()+1,
+                NombreProducto=productoDto.NombreProducto,
+                MarcaProducto=productoDto.MarcaProducto,
+                AltoCaja=productoDto.AltoCaja,
+                AnchoCaja=productoDto.AnchoCaja,
+                ProfundidadCaja=productoDto.ProfundidadCaja,
+                PrecioUnitario=productoDto.PrecioUnitario,
+                StockMinimo=productoDto.StockMinimo,
+                StockTotal=productoDto.StockTotal,
+                FechaCreacion=DateTime.Now,
             };
-            listaClientes.Add(clienteDB);
-            archivo.SaveClienteDB(listaClientes);
-            return clienteDto;
+            listaProductos.Add(productoDB);
+            archivo.SaveProductoDB(listaProductos);
+            return productoDB;
         }
-        public bool EliminarCliente(int dni)
+        public ProductoDB ActualizarStock(int codProducto,int stockNuevo)
         {
-            List<ClienteDB> listaClientesDB = archivo.GetClienteDBList();
-            ClienteDB cliente = listaClientesDB.FirstOrDefault(x => x.DNI == dni);
-            if (cliente == null)
+            List<ProductoDB> listaProductoDB = archivo.GetProductoDBList();
+            if (listaProductoDB.Any(u => u.CodProducto == codProducto))
             {
-                return false;
-            }
-            listaClientesDB.FirstOrDefault(x => x.DNI == dni).FechaEliminacion = DateTime.Now;
-            archivo.SaveClienteDB(listaClientesDB);
-            return true;
-        }
-        public ClienteDto EditarCliente(ClienteDto clienteModificado)
-        {
-            List<ClienteDB> listaClientesDB = archivo.GetClienteDBList();
-            if (listaClientesDB.Any(u => u.DNI == clienteModificado.DNI))
-            {
-                var clienteAEditar = listaClientesDB.Find(u => u.DNI == clienteModificado.DNI);
-                //Falta esto
-                return clienteModificado;
+                listaProductoDB.Find(u => u.CodProducto == codProducto).StockTotal = stockNuevo;
+                listaProductoDB.Find(u => u.CodProducto == codProducto).FechaActualizacion = DateTime.Now;
+                var productoEditado = listaProductoDB.Find(u => u.CodProducto == codProducto);
+
+                return productoEditado;
             }
             return null;
-        }
-        public List<ClienteDto> ObtenerListadoClientes()
-        {
-            return (archivo.GetClienteDBList().Select(X => new ClienteDto()
-            {
-                DNI = X.DNI,
-                Nombre = X.Nombre,
-                Apellido = X.Apellido,
-                Email = X.Email,
-                Telefono = X.Telefono,
-                LatitudGeografica = X.LatitudGeografica
-            }).ToList());
         }
     }
 }
