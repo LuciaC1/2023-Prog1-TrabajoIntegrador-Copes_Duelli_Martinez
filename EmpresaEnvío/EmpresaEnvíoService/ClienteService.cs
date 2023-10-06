@@ -67,6 +67,8 @@ namespace EmpresaEnvíoService
             // Camibiar datos de ClienteAEdtiar a un ClienteDto
             //validCliente.Cliente = clienteAEditar
             validCliente.Resultado = true;
+            validCliente.Cliente = new ClienteDto();
+            validCliente.Cliente.DNI = clienteAEditar.DNI;
             return validCliente;
         }
         public List<ClienteDto> ObtenerListadoClientes()

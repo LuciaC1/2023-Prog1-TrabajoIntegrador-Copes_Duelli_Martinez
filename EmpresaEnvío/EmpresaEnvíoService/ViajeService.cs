@@ -17,9 +17,19 @@ namespace EmpresaEnvíoService
             archivoCompra = new ArchivoCompra();
         }
         //Metodo para validar viaje entre fechas
-        private Validacion ValidarViaje_EntreFechas(int codigoViaje, DateTime fechaDesde, DateTime fechaHasta)
+        private Validacion ValidarViaje_Fechas(int codigoViaje, DateTime fechaDesde, DateTime fechaHasta)
         {
             Validacion validacion = new Validacion();
+            if (fechaDesde < DateTime.Now)
+            {
+                validacion.Errores.Add(new Error() { ErrorDetail = "Fecha de inicio menor a la fecha actual" });
+                return validacion;
+            }
+            if ((fechaHasta - fechaDesde).Days <= 7)
+            {
+                validacion.Errores.Add(new Error() { ErrorDetail = "La fecha de entrega solo puede ser hasta 7 días mayor que la fecha de inicio del viaje" });
+                return validacion;
+            }
             List<ViajeDB> listaViajes = archivoViaje.GetViajeDBList();
             if (listaViajes.Any(x => (x.FechaEntregasDesde < fechaHasta)
                 || (x.FechaEntregasHasta > fechaDesde)))
