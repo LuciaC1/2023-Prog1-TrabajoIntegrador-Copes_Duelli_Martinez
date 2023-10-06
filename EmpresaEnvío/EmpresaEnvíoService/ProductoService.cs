@@ -55,7 +55,17 @@ namespace EmpresaEnvíoService
             listaProductoDB.Find(u => u.CodProducto == codProducto).FechaActualizacion = DateTime.Now;
             var productoEditado = listaProductoDB.Find(u => u.CodProducto == codProducto);
             archivo.SaveProductoDB(listaProductoDB);
-            // Pasar productoEditado(productoDB) a productoDto
+            var productoStockActualizado = new ProductoDto();
+            productoStockActualizado.MarcaProducto = productoEditado.MarcaProducto;
+            productoStockActualizado.CodProducto = productoEditado.CodProducto;
+            productoStockActualizado.NombreProducto = productoEditado.NombreProducto;
+            productoStockActualizado.ProfundidadCaja = productoEditado.ProfundidadCaja;
+            productoStockActualizado.AnchoCaja = productoEditado.AnchoCaja;
+            productoStockActualizado.AltoCaja = productoEditado.AltoCaja;
+            productoStockActualizado.PrecioUnitario = productoEditado.PrecioUnitario;
+            productoStockActualizado.StockMinimo = productoEditado.StockMinimo;
+            productoStockActualizado.StockTotal = productoEditado.StockTotal;
+            validacion.Producto = productoStockActualizado;
             validacion.Resultado = true;
             return validacion;
         }

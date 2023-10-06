@@ -30,13 +30,12 @@ namespace EmpresaEnvíoAPI.Controllers
         {
             var clienteActualizado = service.EditarCliente(clienteModificado);
 
-            if (clienteActualizado == null)
+            if (clienteActualizado.Resultado == false)
             {
-                return BadRequest("No existe el cliente solicitado");
-
+                return BadRequest(clienteActualizado.Errores[1]);
             }
 
-            return Ok(clienteActualizado);
+            return Ok(clienteActualizado.Cliente);
         }
         [HttpDelete("{dni}")]
         public IActionResult EliminarSuscripcion(int dni)
