@@ -7,6 +7,6 @@
         public DateTime FechaEntregasDesde { get; set; }
         public DateTime FechaEntregasHasta { get; set; }
         public int PorcentajeOcupacionCarga { get; set; }
-        List<CompraDto>? ListadoCompras { get; set; }
+        public List<CompraDto>? ListadoCompras { get; set; }
     }
 }

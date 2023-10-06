@@ -10,5 +10,22 @@
         public DateTime FechaEntregaSolicitada { get; set; }
         public EstadosCompra EstadoCompra { get; set; }
         public int MontoTotal { get; set; }
-    }
+
+        const decimal IVA = 0.21M;
+        const decimal Descuento = 0.25M; 
+
+        private decimal CalcularTotalConIVA()
+        {
+            return MontoTotal + MontoTotal* IVA;
+        }
+        private decimal CalcularTotalDescuentoConIVA()
+        {
+            decimal totalConIVA = CalcularTotalConIVA();
+            if (CantComprada > 4)
+            {
+                return totalConIVA + totalConIVA * Descuento;
+            }
+            return totalConIVA;
+        }
+    } 
 }
