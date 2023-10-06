@@ -64,8 +64,14 @@ namespace EmpresaEnvíoService
             listaClientesDB.Add(clienteAEditar);
             listaClientesDB = listaClientesDB.OrderBy(x => x.FechaCreacion).ToList();
             archivo.SaveClienteDB(listaClientesDB);
-            // Camibiar datos de ClienteAEdtiar a un ClienteDto
-            //validCliente.Cliente = clienteAEditar
+            clienteModificado.DNI = clienteAEditar.DNI;
+            clienteModificado.Apellido = clienteAEditar.Apellido;
+            clienteModificado.Nombre = clienteAEditar.  Nombre;
+            clienteModificado.Email = clienteAEditar.Email;
+            clienteModificado.Telefono  = clienteAEditar.Telefono;
+            clienteModificado.LongitudGeografica = clienteAEditar.LongitudGeografica;
+            clienteModificado.LatitudGeografica= clienteAEditar.LatitudGeografica;
+            validCliente.Cliente = clienteModificado;
             validCliente.Resultado = true;
             validCliente.Cliente = new ClienteDto();
             validCliente.Cliente.DNI = clienteAEditar.DNI;
@@ -86,10 +92,15 @@ namespace EmpresaEnvíoService
         }
 
 
-        private ClienteDB ModificarCliente(ClienteDto ClienteMod, ClienteDB clienteAMod)
+        private ClienteDB ModificarCliente(ClienteDto clienteMod, ClienteDB clienteAMod)
         {
-            clienteAMod.Nombre = string.IsNullOrEmpty(ClienteMod.Nombre) ? clienteAMod.Nombre : clienteAMod.Nombre;
-
+            clienteAMod.Nombre = string.IsNullOrEmpty(clienteMod.Nombre) ? clienteMod.Nombre : clienteAMod.Nombre;
+            clienteAMod.Apellido = string.IsNullOrEmpty(clienteMod.Apellido) ? clienteMod.Apellido : clienteAMod.Apellido;
+            clienteAMod.Email = string.IsNullOrEmpty(clienteMod.Email) ? clienteMod.Email : clienteAMod.Email;
+            clienteAMod.Telefono = (clienteMod.Telefono==0) ? clienteMod.Telefono : clienteAMod.Telefono;
+            clienteAMod.LatitudGeografica = (clienteMod.LatitudGeografica==0) ? clienteMod.LatitudGeografica : clienteAMod.LatitudGeografica;
+            clienteAMod.LongitudGeografica = (clienteMod.LongitudGeografica==0) ? clienteAMod.LongitudGeografica : clienteAMod.LongitudGeografica;
+            clienteAMod.FechaActualizacion = DateTime.Now;
             return clienteAMod;
         }
     }

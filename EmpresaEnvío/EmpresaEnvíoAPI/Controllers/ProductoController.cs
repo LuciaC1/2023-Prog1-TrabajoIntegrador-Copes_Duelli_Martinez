@@ -27,13 +27,12 @@ namespace EmpresaEnvíoAPI.Controllers
         [HttpPut("")]
         public IActionResult ActualizarStock([FromBody] int codProducto, int stockNuevo)
         {
-            var clienteActualizado = service.ActualizarStock(codProducto, stockNuevo);
-            if (clienteActualizado == null)
+            var productoActualizado = service.ActualizarStock(codProducto, stockNuevo);
+            if (productoActualizado.Resultado == false)
             {
-                return BadRequest("No existe el producto a actualizar");
-
+                return BadRequest(productoActualizado.Errores[1]);
             }
-            return Ok(clienteActualizado);
+            return Ok(productoActualizado.Producto);
         }
     }
 }
