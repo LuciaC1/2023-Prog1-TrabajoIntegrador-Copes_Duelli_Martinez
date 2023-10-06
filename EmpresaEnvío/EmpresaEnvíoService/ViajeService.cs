@@ -1,71 +1,41 @@
 ﻿using EmpresaEnvíoData;
 using EmpresaEnvÍoDto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmpresaEnvíoService
 {
     public class ViajeService
     {
         ArchivoViaje archivoViaje;
-        ArchivoCamioneta archivoCamioneta;
-        ArchivoCliente archivoCliente;
+        CamionetaService camionetaService;
+        ClienteService clienteService;
         ArchivoCompra archivoCompra;
         public ViajeService()
         {
             archivoViaje = new ArchivoViaje();
-            archivoCamioneta = new ArchivoCamioneta();
-            archivoCliente = new ArchivoCliente();
+            camionetaService = new CamionetaService();
+            clienteService = new ClienteService();
             archivoCompra = new ArchivoCompra();
         }
-        //Metodo obtener cliente
-        public ClienteDB ObtenerCliente(int dniCliente)
-        {
-            List<ClienteDB> listaClientes = archivoCliente.GetClienteDBList();
-            var cliente = listaClientes.FirstOrDefault(c => c.DNI == dniCliente);
-            return cliente;
-        }
-        //Metodo obtener camioneta
-        public CamionetaDB ObtenerCamioneta(string patente)
-        {
-            List<CamionetaDB> listaCamionetas = archivoCamioneta.GetCamionetaDBList();
-            var camioneta = listaCamionetas.FirstOrDefault(s => s.Patente == patente);
-            return camioneta;
-        }
-        //Metodo para validar los datos de la camioneta
-        private bool ValidarDatos_Camioneta(string patente)
-        {
-            List<CamionetaDB> listaCamioneta = archivoCamioneta.GetCamionetaDBList();
-            var camioneta = listaCamioneta.FirstOrDefault(c => c.Patente == patente);
-            if (camioneta.Nombre== default || camioneta.Patente == default || camioneta == null)
-            {
-                return false;
-            }
-            return true;
-        }
         //Metodo para validar viaje entre fechas
-        private bool ValidarViaje_EntreFechas(int codigoViaje, DateTime fechaDesde, DateTime fechaHasta)
+        private Validacion ValidarViaje_EntreFechas(int codigoViaje, DateTime fechaDesde, DateTime fechaHasta)
         {
+            Validacion validacion = new Validacion();
             List<ViajeDB> listaViajes = archivoViaje.GetViajeDBList();
-            var viaje = listaViajes.FirstOrDefault(v => v.CodigoUnicoViaje == codigoViaje);
-            if (viaje.FechaEntregasDesde >= fechaDesde && viaje.FechaEntregasDesde <= fechaHasta 
-                || viaje.FechaEntregasHasta >= fechaDesde && viaje.FechaEntregasHasta <= fechaDesde 
-                || fechaDesde >= viaje.FechaEntregasDesde && fechaDesde <= viaje.FechaEntregasHasta 
-                || fechaHasta >= viaje.FechaEntregasDesde && fechaHasta <= viaje.FechaEntregasHasta)
+            if (listaViajes.Any(x => (x.FechaEntregasDesde < fechaHasta)
+                || (x.FechaEntregasHasta > fechaDesde)))
             {
-                return false; 
+                validacion.Errores.Add(new Error() { ErrorDetail = "Fechas concidentes con otros viajes" });
+                return validacion;
             }
-            return true; 
+            validacion.Resultado = true;
+            return validacion;
         }
         //Metodo para validar que la distancia no sea mayor a la de la camioneta
         private bool ValidarDistanciaDeCamioneta(int dniCliente, string patente)
         {
-            var cliente = ObtenerCliente(dniCliente);
-            var camioneta = ObtenerCamioneta(patente);
-            if ( CalcularDistanciaEntrePuntos(dniCliente) > camioneta.DistanciaMaxKM)
+            var cliente = (dniCliente);
+            var camioneta = camionetaService.ObtenerListadoCamionetas().First(x => x.Patente == patente);
+            if (CalcularDistanciaEntrePuntos(dniCliente) > camioneta.DistanciaMaxKM)
             {
                 return false;
             }
@@ -74,7 +44,7 @@ namespace EmpresaEnvíoService
         //Metodo para calcular la distancia entre los puntos 
         public double CalcularDistanciaEntrePuntos(int dniCliente)
         {
-            var cliente = ObtenerCliente(dniCliente);
+            var cliente = clienteService.ObtenerListadoClientes().First(x => x.DNI == dniCliente);
             const double R = 6371; // Radio de la tierra en km
             double dLat = GradosARadianes(cliente.LatitudGeografica - -31.25033);
             double dLon = GradosARadianes(cliente.LongitudGeografica - -61.4867);

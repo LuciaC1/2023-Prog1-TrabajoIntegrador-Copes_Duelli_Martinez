@@ -30,9 +30,9 @@ namespace EmpresaEnvíoService
             archivo.SaveProductoDB(listaProductos);
             return productoDto;
         }
-        public Validacion ActualizarStock(int codProducto, int stockNuevo)
+        public ValidacionModProducto ActualizarStock(int codProducto, int stockNuevo)
         {
-            Validacion validacion = new Validacion();
+            ValidacionModProducto validacion = new();
             List<ProductoDB> listaProductoDB = archivo.GetProductoDBList();
             ProductoDB producto = listaProductoDB.FirstOrDefault(u => u.CodProducto == codProducto);
             if (producto == default)
@@ -46,15 +46,16 @@ namespace EmpresaEnvíoService
                 return validacion;
             }
 
-            if (stockNuevo < producto.StockMinimo)
+            if (stockNuevo < 0)
             {
-                validacion.Errores.Add(new Error() { ErrorDetail = $@"El producto no puede tener un stock menor a su mínimo. 
-Mínimo de stock: {producto.StockMinimo}" });
+                validacion.Errores.Add(new Error() { ErrorDetail = "El producto no puede tener un stock negativo" });
                 return validacion;
             }
             listaProductoDB.Find(u => u.CodProducto == codProducto).StockTotal = stockNuevo;
             listaProductoDB.Find(u => u.CodProducto == codProducto).FechaActualizacion = DateTime.Now;
             var productoEditado = listaProductoDB.Find(u => u.CodProducto == codProducto);
+            archivo.SaveProductoDB(listaProductoDB);
+            // Pasar productoEditado(productoDB) a productoDto
             validacion.Resultado = true;
             return validacion;
         }

@@ -79,7 +79,7 @@ namespace EmpresaEnvíoService
                 Email = X.Email,
                 Telefono = X.Telefono,
                 LatitudGeografica = X.LatitudGeografica,
-                LongitudGeografica = X.LongitudGeografica
+                LongitudGeografica = X.LongitudGeografica,
             }).ToList());
         }
 
