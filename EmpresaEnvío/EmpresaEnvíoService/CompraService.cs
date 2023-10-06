@@ -18,7 +18,7 @@ namespace EmpresaEnvíoService
             archivoProducto = new ArchivoProducto();
         }
         //Metodo que da de alta una compra (registra una compra) y valida que haya stock del item a comprar.
-        public List<CompraDB> RegistrarCompra(CompraDto compra)
+        public CompraDto RegistrarCompra(CompraDto compra)
         {
             if (!ValidarStockProducto(compra.CodigoProducto, compra.CantComprada))
             {

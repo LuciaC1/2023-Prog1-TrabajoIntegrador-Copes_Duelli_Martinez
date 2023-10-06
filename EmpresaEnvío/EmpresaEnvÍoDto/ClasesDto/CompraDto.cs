@@ -11,16 +11,16 @@
         public EstadosCompra EstadoCompra { get; set; }
         public int MontoTotal { get; set; }
 
-        const decimal IVA = 0.21M;
-        const decimal Descuento = 0.25M; 
+        const double IVA = 0.21;
+        const double Descuento = 0.25; 
 
-        private decimal CalcularTotalConIVA()
+        private double CalcularTotalConIVA()
         {
             return MontoTotal + MontoTotal* IVA;
         }
-        private decimal CalcularTotalDescuentoConIVA()
+        private double CalcularTotalDescuentoConIVA()
         {
-            decimal totalConIVA = CalcularTotalConIVA();
+            double totalConIVA = CalcularTotalConIVA();
             if (CantComprada > 4)
             {
                 return totalConIVA + totalConIVA * Descuento;
