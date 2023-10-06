@@ -17,10 +17,6 @@ namespace EmpresaEnvíoAPI.Controllers
         [HttpPost("")]
         public IActionResult CrearNuevoCliente([FromBody] ClienteDto clienteDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var clienteNuevo = service.CrearCliente(clienteDto);
             if (clienteNuevo == null)
             {
