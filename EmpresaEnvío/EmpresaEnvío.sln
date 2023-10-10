@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34009.444
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpresaEnvíoData", "EmpresaEnvíoData\EmpresaEnvíoData.csproj", "{2239CBCF-2EDF-4BA8-98B2-E121E19CDE2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmpresaEnvíoData", "EmpresaEnvíoData\EmpresaEnvíoData.csproj", "{2239CBCF-2EDF-4BA8-98B2-E121E19CDE2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpresaEnvÍoDto", "EmpresaEnvÍoDto\EmpresaEnvÍoDto.csproj", "{729A5C3D-FBD7-45FC-A511-9897A2098BD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmpresaEnvÍoDto", "EmpresaEnvÍoDto\EmpresaEnvÍoDto.csproj", "{729A5C3D-FBD7-45FC-A511-9897A2098BD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpresaEnvíoService", "EmpresaEnvíoService\EmpresaEnvíoService.csproj", "{9E37DF54-3712-486C-B660-2D62A956826F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmpresaEnvíoService", "EmpresaEnvíoService\EmpresaEnvíoService.csproj", "{9E37DF54-3712-486C-B660-2D62A956826F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpresaEnvíoAPI", "EmpresaEnvíoAPI\EmpresaEnvíoAPI.csproj", "{8E9BA553-0D79-4B6A-91A7-82E1C68C434E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmpresaEnvíoAPI", "EmpresaEnvíoAPI\EmpresaEnvíoAPI.csproj", "{8E9BA553-0D79-4B6A-91A7-82E1C68C434E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpresaEnvioTest", "EmpresaEnvioTest\EmpresaEnvioTest.csproj", "{E5D1B8C0-F5B2-41D1-B5C2-295155798DB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{8E9BA553-0D79-4B6A-91A7-82E1C68C434E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E9BA553-0D79-4B6A-91A7-82E1C68C434E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E9BA553-0D79-4B6A-91A7-82E1C68C434E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5D1B8C0-F5B2-41D1-B5C2-295155798DB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5D1B8C0-F5B2-41D1-B5C2-295155798DB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5D1B8C0-F5B2-41D1-B5C2-295155798DB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5D1B8C0-F5B2-41D1-B5C2-295155798DB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
