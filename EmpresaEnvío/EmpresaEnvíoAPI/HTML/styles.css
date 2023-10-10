@@ -1,2 +1,128 @@
 ﻿body {
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 120vh;
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+h1{
+    margin-left: 2%;
+    font-size: medium;
+}
+
+.sticky-header {
+    background-color:black;
+    color: #fff;
+    text-align: left;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    font: 1.5em;
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 0 auto;
+    border: transparent;
+}
+
+.grid-item {
+    width: calc(50% - 10px); 
+    margin-bottom: 20px; 
+    box-sizing: border-box;
+    border: transparent; 
+    padding: 10px;
+}
+
+.grid-item-clickable {
+    width: calc(50% - 10px); 
+    margin-bottom: 20px; 
+    box-sizing: border-box;
+    border: transparent; 
+    padding: 10px;
+}
+
+@media (max-width: 700px) {
+    .grid-item {
+        width: 100%;
+    }
+    body{
+        height: 150vh;
+    }
+    .grid-item-clickable {
+        width: 100%;
+    }
+}
+
+.grid-item-clickable:hover {
+    background-color: #000;
+    transform: scale(1.05);
+    color: white;
+    cursor: pointer;
+}
+
+/*Forms css*/
+.form-container {
+    background-color: #fff;
+    border: 3px solid #000;
+    border-radius: 5px;
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+    transition: background-color 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.form-container:hover {
+    background-color: #000;
+    transform: scale(1.05);
+    color: white;
+}
+.form-item {
+    margin: 10px 0;
+    padding: 10px;
+    border: 2px solid #000;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-item:focus {
+    outline: none;
+    border-color: lightgreen;
+}
+
+.form-buttons {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-buttons button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    border: 3px solid #000;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #fff;
+    color: #000;
+    transition: background-color 0.3s ease-out, border-color 0.3s ease-out, color 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.form-buttons button:hover {
+    background-color: #15ff92;
+    border-color: transparent;
+    color: black;
+    font-weight: bolder;
+    transform: scale(1.05);
+}
+#formResponse{
+    display: none;
 }
