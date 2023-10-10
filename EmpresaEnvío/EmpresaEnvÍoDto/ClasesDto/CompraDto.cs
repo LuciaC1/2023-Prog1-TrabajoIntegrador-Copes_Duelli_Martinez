@@ -8,24 +8,23 @@
         public DateTime FechaVenta { get; set; }
         public int CantComprada { get; set; }
         public DateTime FechaEntregaSolicitada { get; set; }
-        public EstadosCompra EstadoCompra { get; set; }
-        public int MontoTotal { get; set; }
-
-        const double IVA = 0.21;
-        const double Descuento = 0.25; 
+        public EstadosCompraDto EstadoCompra { get; set; }
+        public double MontoTotal { get; set; }
 
         private double CalcularTotalConIVA()
         {
+            const double IVA = 0.21;
             return MontoTotal + MontoTotal* IVA;
         }
-        private double CalcularTotalDescuentoConIVA()
+        public void CalcularTotalDescuentoConIVA()
         {
+            const double Descuento = 0.25;
             double totalConIVA = CalcularTotalConIVA();
             if (CantComprada > 4)
             {
-                return totalConIVA + totalConIVA * Descuento;
+                totalConIVA = totalConIVA + totalConIVA * Descuento;
             }
-            return totalConIVA;
+            this.MontoTotal=totalConIVA;
         }
     } 
 }
