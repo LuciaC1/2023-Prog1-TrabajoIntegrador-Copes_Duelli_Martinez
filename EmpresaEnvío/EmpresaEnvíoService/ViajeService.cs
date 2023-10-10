@@ -21,8 +21,11 @@ namespace EmpresaEnvíoService
         public Validacion ProgramarEnvío()
         {
             //Buscar compras estado open
+            List<CompraDB> listadoCompras = archivoCompra.GetCompraDBList().Where(x => x.EstadoCompra == EstadosCompraDB.OPEN)
+                .OrderBy(x => x.FechaEntregaSolicitada).ToList();
             //Asignar camión si
             //1. La fecha de viaje no coincide
+            
             //Registro viaje
             //Asignar a camiones si
             //1. El camión tiene lugar
