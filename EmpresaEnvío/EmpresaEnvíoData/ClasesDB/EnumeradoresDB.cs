@@ -1,6 +1,6 @@
 ﻿namespace EmpresaEnvíoData
 {
-    public enum EstadosCompra
+    public enum EstadosCompraDB
     {
         OPEN,
         READY_TO_DISPATCH
