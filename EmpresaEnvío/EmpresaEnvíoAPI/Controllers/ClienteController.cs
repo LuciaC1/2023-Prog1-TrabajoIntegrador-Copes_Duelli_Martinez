@@ -17,13 +17,11 @@ namespace EmpresaEnvíoAPI.Controllers
         [HttpPost("")]
         public IActionResult CrearNuevoCliente([FromBody] ClienteDto clienteDto)
         {
-            var clienteNuevo = service.CrearCliente(clienteDto);
-            if (clienteNuevo == null)
-            {
-                return BadRequest("Error en crear cliente");
+            if (clienteDto.IsValid().Resultado) {
+                var clienteNuevo = service.CrearCliente(clienteDto);
+                return Ok(clienteNuevo);
             }
-
-            return Ok(clienteNuevo);
+            return BadRequest(clienteDto.IsValid().Errores);
         }
         [HttpPut("")]
         public IActionResult ActualizarCliente([FromBody] ClienteDto clienteModificado)
@@ -32,7 +30,7 @@ namespace EmpresaEnvíoAPI.Controllers
 
             if (clienteActualizado.Resultado == false)
             {
-                return BadRequest(clienteActualizado.Errores[1]);
+                return BadRequest(clienteActualizado.Errores);
             }
 
             return Ok(clienteActualizado.Cliente);
