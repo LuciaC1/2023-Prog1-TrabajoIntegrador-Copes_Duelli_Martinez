@@ -8,48 +8,62 @@ namespace EmpresaEnvíoAPI.Controllers
     [ApiController]
     public class ClienteController : ControllerBase
     {
-        ClienteService service;
+        private ClienteService service;
 
         public ClienteController()
         {
             service = new ClienteService();
         }
+
         [HttpPost("")]
         public IActionResult CrearNuevoCliente([FromBody] ClienteDto clienteDto)
         {
-            if (clienteDto.IsValid().Resultado) {
-                var clienteNuevo = service.CrearCliente(clienteDto);
-                return Ok(clienteNuevo);
+            Validacion valid = clienteDto.IsValid();
+            if (!valid.Resultado)
+            {
+                return BadRequest(valid.Errores);
             }
-            return BadRequest(clienteDto.IsValid().Errores);
+            var clienteNuevo = service.CrearCliente(clienteDto);
+            return Ok(clienteNuevo);
         }
+
         [HttpPut("")]
         public IActionResult ActualizarCliente([FromBody] ClienteDto clienteModificado)
         {
-            var clienteActualizado = service.EditarCliente(clienteModificado);
-
-            if (clienteActualizado.Resultado == false)
+            Validacion valid = clienteModificado.IsValid();
+            if (!valid.Resultado)
             {
-                return BadRequest(clienteActualizado.Errores);
+                return BadRequest(valid.Errores);
             }
+            ValidacionCliente validacionCliente = service.EditarCliente(clienteModificado);
 
-            return Ok(clienteActualizado.Cliente);
+            if (!validacionCliente.Resultado)
+            {
+                return BadRequest(validacionCliente.Errores);
+            }
+            return Ok(validacionCliente.Cliente);
         }
+
         [HttpDelete("{dni}")]
-        public IActionResult EliminarSuscripcion(int dni)
+        public IActionResult EliminarCliente(int dni)
         {
-            var eliminarSuscripcionResponse = service.EliminarCliente(dni);
+            Validacion validacion = service.EliminarCliente(dni);
 
-            if (eliminarSuscripcionResponse.Resultado)
+            if (validacion.Resultado && validacion.Errores.Count > 0)
             {
-                return Ok($"Cliente con DNI {dni} eliminado exitosamente");
+                return BadRequest(validacion.Errores);
             }
-            return NotFound($"Cliente con DNI {dni} no encontrado");
+            if (!validacion.Resultado)
+            {
+                return NotFound(validacion.Errores);
+            }
+            return Ok($"Cliente con DNI {dni} eliminado correctamente");
         }
+
         [HttpGet]
         public IActionResult ObtenerListadoClientes()
         {
-            return Ok(service.ObtenerListadoClientes);
+            return Ok(service.ObtenerListadoClientes());
         }
     }
 }

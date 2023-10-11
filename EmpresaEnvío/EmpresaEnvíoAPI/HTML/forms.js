@@ -1,4 +1,4 @@
-document.getElementById('FormCrearReq').addEventListener('submit', function(event){
+document.getElementById('FormCrearReq').addEventListener('submit', function (event) {
     event.preventDefault();
     document.getElementById('formResponse').style.display = "none";
     document.getElementById('tablaReqPost').innerHTML = "";
@@ -21,33 +21,33 @@ document.getElementById('FormCrearReq').addEventListener('submit', function(even
 
     fetch('http://localhost:5232/Requerimiento', {
         method: 'POST',
-        headers:{
+        headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(Requerimiento)
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-        showData(data);
-        alert('Procesamiento correcto');
-    })
-    .catch(error => {
-        console.log(error);
-        alert('Error al procesar', error);
-    });
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            showData(data);
+            alert('Procesamiento correcto');
+        })
+        .catch(error => {
+            console.log(error);
+            alert('Error al procesar', error);
+        });
 });
 
 function showData(data) {
     var fila = document.createElement("tr");
-                fila.innerHTML = `
+    fila.innerHTML = `
                     <td>${data.id}</td>
                     <td>${data.titulo}</td>
                     <td>${data.descripcion}</td>
-                    <td>${Object.keys(prioridadEnum)[data.prioridad-1]}</td>
-                    <td>${Object.keys(estadoEnum)[data.estado-1]}</td>
-                    <td>${data.fechaVencimiento.slice(0,10)}</td>
-                    <td>${data.fechaCreacion.slice(0,10)}</td>
+                    <td>${Object.keys(prioridadEnum)[data.prioridad - 1]}</td>
+                    <td>${Object.keys(estadoEnum)[data.estado - 1]}</td>
+                    <td>${data.fechaVencimiento.slice(0, 10)}</td>
+                    <td>${data.fechaCreacion.slice(0, 10)}</td>
                 `;
     document.getElementById('tablaReqPost').appendChild(fila);
     document.getElementById('formResponse').style.display = "block";

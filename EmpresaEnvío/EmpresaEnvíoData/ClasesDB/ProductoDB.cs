@@ -12,7 +12,7 @@
         public int StockMinimo { get; set; }
         public int StockTotal { get; set; }
         public DateTime FechaCreacion { get; set; }
-        public DateTime FechaEliminacion { get; set; }
-        public DateTime FechaActualizacion { get; set; }
+        public DateTime? FechaEliminacion { get; set; }
+        public DateTime? FechaActualizacion { get; set; }
     }
 }

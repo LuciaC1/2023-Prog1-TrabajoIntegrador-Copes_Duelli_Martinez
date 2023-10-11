@@ -19,12 +19,12 @@ namespace EmpresaEnvíoData
 
         #region Get CamionetaDB
 
-        public List<CamionetaDB> GetCamionetaDBList()
+        public List<Camioneta> GetCamionetaDBList()
         {
-            List<CamionetaDB> listCamionetaDB = new List<CamionetaDB>();
+            List<Camioneta> listCamionetaDB = new List<Camioneta>();
             if (File.Exists(pathArchivo))
             {
-                listCamionetaDB = JsonConvert.DeserializeObject<List<CamionetaDB>>(File.ReadAllText(pathArchivo));
+                listCamionetaDB = JsonConvert.DeserializeObject<List<Camioneta>>(File.ReadAllText(pathArchivo));
             }
             return listCamionetaDB;
         }
@@ -33,7 +33,7 @@ namespace EmpresaEnvíoData
 
         #region Save CamionetaDB
 
-        public void SaveCamionetaDB(List<CamionetaDB> listCamionetaDB)
+        public void SaveCamionetaDB(List<Camioneta> listCamionetaDB)
         {
             string saveData = JsonConvert.SerializeObject(listCamionetaDB, Formatting.Indented);
             File.WriteAllText(pathArchivo, saveData);

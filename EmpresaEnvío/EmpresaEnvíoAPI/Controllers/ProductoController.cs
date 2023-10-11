@@ -8,29 +8,36 @@ namespace EmpresaEnvíoAPI.Controllers
     [ApiController]
     public class ProductoController : ControllerBase
     {
-        ProductoService service;
+        private ProductoService service;
 
         public ProductoController()
         {
             service = new ProductoService();
         }
+
         [HttpPost("")]
         public IActionResult AgregarProducto([FromBody] ProductoDto productoDto)
         {
-            if (productoDto.IsValid().Resultado)
+            var validación = productoDto.IsValid();
+            if (!validación.Resultado)
             {
-                service.AñadirProducto(productoDto);
-                return Ok(productoDto);
+                return BadRequest(validación.Errores);
             }
-            return BadRequest(productoDto.IsValid().Errores);
+            ValidacionProducto validacionProducto = service.AñadirProducto(productoDto);
+            if (!validacionProducto.Resultado)
+            {
+                return BadRequest(validacionProducto.Errores);
+            }
+            return Ok(validacionProducto.Producto);
         }
+
         [HttpPut("")]
         public IActionResult ActualizarStock([FromBody] int codProducto, int stockNuevo)
         {
             var productoActualizado = service.ActualizarStock(codProducto, stockNuevo);
-            if (productoActualizado.Resultado == false)
+            if (!productoActualizado.Resultado)
             {
-                return BadRequest(productoActualizado.Errores[1]);
+                return BadRequest(productoActualizado.Errores);
             }
             return Ok(productoActualizado.Producto);
         }

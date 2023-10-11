@@ -5,10 +5,13 @@ namespace EmpresaEnvíoService
 {
     public class ViajeService
     {
-        ArchivoViaje archivoViaje;
-        CamionetaService camionetaService;
-        ClienteService clienteService;
-        ArchivoCompra archivoCompra;
+        #region Constructor
+
+        private ArchivoViaje archivoViaje;
+        private CamionetaService camionetaService;
+        private ClienteService clienteService;
+        private ArchivoCompra archivoCompra;
+
         public ViajeService()
         {
             archivoViaje = new ArchivoViaje();
@@ -17,69 +20,166 @@ namespace EmpresaEnvíoService
             archivoCompra = new ArchivoCompra();
         }
 
+        #endregion Constructor
 
-        public Validacion ProgramarEnvío()
+        // Metodo para generar viajes (POST)
+        public ValidacionViaje ProgramarEnvío(DateTime fechaDesde, DateTime fechaHasta)
         {
+            // Validar fechas de viaje
+            Validacion validacion = ValidarViaje_Fechas(fechaDesde, fechaHasta);
+            ValidacionViaje validacionViaje = new();
+            validacionViaje.Errores = validacion.Errores;
+            validacionViaje.Resultado = validacion.Resultado;
+            if (!validacionViaje.Resultado)
+            {
+                return validacionViaje;
+            }
+            //Buscar camionetas disponibles en esas fechas
+            List<Camioneta> camionetas = CamionetasDisponibles(fechaDesde, fechaHasta);
+            if (camionetas.Count == 0)
+            {
+                validacionViaje.Resultado = false;
+                validacionViaje.Errores.Add(new Error() { ErrorDetail = "No hay camionetas disponibles para el viaje" });
+                return validacionViaje;
+            }
+
             //Buscar compras estado open
-            List<CompraDB> listadoCompras = archivoCompra.GetCompraDBList().Where(x => x.EstadoCompra == EstadosCompraDB.OPEN)
-                .OrderBy(x => x.FechaEntregaSolicitada).ToList();
-            //Asignar camión si
-            //1. La fecha de viaje no coincide
-            
+            List<CompraDto> listadoCompras = archivoCompra.GetCompraDBList().Where(x => x.EstadoCompra == EstadosCompraDB.OPEN)
+                .OrderBy(x => x.FechaEntregaSolicitada).Select(x => new CompraDto()
+                {
+                    CodigoProducto = x.CodigoProducto,
+                    DNICliente = x.DNICliente,
+                    FechaEntregaSolicitada = x.FechaEntregaSolicitada,
+                    CodigoCompra = x.CodigoCompra,
+                    CantComprada = x.CantComprada,
+                    EstadoCompra = EstadosCompraDto.OPEN,
+                    MontoTotal = x.MontoTotal,
+                    FechaCompra = x.FechaCompra
+                }).ToList();
+
+            //Verificar que haya compras a enviar
+            if (listadoCompras.Count == 0)
+            {
+                validacionViaje.Resultado = false;
+                validacionViaje.Errores.Add(new Error() { ErrorDetail = "No hay compras listas para enviar" });
+                return validacionViaje;
+            }
+
+            //Buscar la mejor combinación posible
+            ResultadoEnvio resultado = MejorCombinacion(listadoCompras, camionetas);
+
+            //Verificar que haya una combinación posible
+            if (resultado.ListadoCompras.Count == 0)
+            {
+                validacionViaje.Resultado = false;
+                validacionViaje.Errores.Add(new Error() { ErrorDetail = "Las compras a enviar no pudieron ser combinadas correctamente" });
+                return validacionViaje;
+            }
+
+            //Cambiar estado de compras a READY_TO_DISPATCH
+            var listadoComprasDB = archivoCompra.GetCompraDBList();
+            foreach (var compra in listadoComprasDB)
+            {
+                if (!resultado.ListadoCompras.Any(x => x.CodigoCompra == compra.CodigoCompra))
+                {
+                    compra.FechaEntregaSolicitada = compra.FechaEntregaSolicitada.AddDays(14);
+                    continue;
+                }
+                listadoComprasDB.First(x => x.CodigoCompra == compra.CodigoCompra).EstadoCompra = EstadosCompraDB.READY_TO_DISPATCH;
+            }
+
+            //Aumentar fecha estimada de entrega en 2 semanas para las compras que no estén en resultado.ListadoCompras
+            foreach (var compra in listadoCompras.Where(x => !resultado.ListadoCompras.Any(y => y.CodigoCompra == x.CodigoCompra)))
+            {
+                listadoComprasDB.First(x => x.CodigoCompra == compra.CodigoCompra).FechaEntregaSolicitada.AddDays(14);
+            }
+            archivoCompra.SaveCompraDB(listadoComprasDB);
+
             //Registro viaje
-            //Asignar a camiones si
-            //1. El camión tiene lugar
-            //2. La distancia a cliente es menor a distancia recorrible
-            //Si no se asigna:
-            //Agregar 2 semanas a fecha estimada
+            List<ViajeDB> listadoViajesDB = archivoViaje.GetViajeDBList();
+            ViajeDto viaje = new ViajeDto()
+            {
+                CodigoUnicoViaje = listadoViajesDB.Count + 1,
+                FechaEntregasDesde = fechaDesde,
+                FechaEntregasHasta = fechaHasta,
+                ListadoCompras = resultado.ListadoCompras.Select(x => x.CodigoCompra).ToList(),
+                Patente = resultado.Patente,
+                PorcentajeOcupacionCarga = resultado.PorcentajeOcupacion
+            };
+            listadoViajesDB.Add(new ViajeDB()
+            {
+                CodigoUnicoViaje = viaje.CodigoUnicoViaje,
+                FechaEntregasDesde = viaje.FechaEntregasDesde,
+                FechaEntregasHasta = viaje.FechaEntregasHasta,
+                Patente = viaje.Patente,
+                PorcentajeOcupacionCarga = viaje.PorcentajeOcupacionCarga,
+                ListadoCompras = viaje.ListadoCompras,
+                FechaCreacion = DateTime.Now
+            });
+
+            //Guardar listado de viajes
+            archivoViaje.SaveViajeDB(listadoViajesDB);
+
+            //Devolver resultado correcto de viaje
+            validacionViaje.Resultado = true;
+            validacionViaje.Viaje = viaje;
+            return validacionViaje;
         }
-
-
 
         #region Auxiliares
 
-
         //Metodo para validar viaje entre fechas
-        private Validacion ValidarViaje_Fechas(int codigoViaje, DateTime fechaDesde, DateTime fechaHasta)
+        private Validacion ValidarViaje_Fechas(DateTime fechad, DateTime fechah)
         {
             Validacion validacion = new Validacion();
-            if (fechaDesde < DateTime.Now)
+            if (fechad < DateTime.Now)
             {
-                validacion.Errores.Add(new Error() { ErrorDetail = "Fecha de inicio menor a la fecha actual" });
+                validacion.Errores.Add(new Error() { ErrorDetail = "Fecha de inicio del viaje menor a la fecha actual" });
                 return validacion;
             }
-            if ((fechaHasta - fechaDesde).Days <= 7)
+            if ((fechah - fechad).Days > 7)
             {
                 validacion.Errores.Add(new Error() { ErrorDetail = "La fecha de entrega solo puede ser hasta 7 días mayor que la fecha de inicio del viaje" });
-                return validacion;
-            }
-            List<ViajeDB> listaViajes = archivoViaje.GetViajeDBList();
-            if (listaViajes.Any(x => (x.FechaEntregasDesde < fechaHasta)
-                || (x.FechaEntregasHasta > fechaDesde)))
-            {
-                validacion.Errores.Add(new Error() { ErrorDetail = "Fechas concidentes con otros viajes" });
                 return validacion;
             }
             validacion.Resultado = true;
             return validacion;
         }
-        //Metodo para validar que la distancia no sea mayor a la de la camioneta
-        private bool ValidarDistanciaDeCamioneta(int dniCliente, string patente)
+
+        //Metodo para buscar camionetas disponibles para el viaje
+        private List<Camioneta> CamionetasDisponibles(DateTime fechaDesde, DateTime fechaHasta)
         {
-            var cliente = clienteService.ObtenerListadoClientes().First(x => x.DNI == dniCliente);
-            var camioneta = camionetaService.ObtenerListadoCamionetas().First(x => x.Patente == patente);
-            if (CalcularDistanciaEntrePuntos(cliente) > camioneta.DistanciaMaxKM)
+            List<ViajeDB> listaViajes = archivoViaje.GetViajeDBList();
+            List<Camioneta> listaCamionetas = CamionetaService.ObtenerListadoCamionetas();
+            foreach (Camioneta camioneta in listaCamionetas)
+            {
+                var listCamioneta = listaViajes.Where(x => x.Patente == camioneta.Patente);
+                if (listCamioneta.Any(x => (x.FechaEntregasDesde < fechaHasta && x.FechaEntregasHasta > fechaDesde)
+                || (x.FechaEntregasHasta > fechaDesde && x.FechaEntregasDesde < fechaHasta)))
+                {
+                    listaCamionetas.Remove(camioneta);
+                }
+            }
+            return listaCamionetas;
+        }
+
+        //Metodo para validar que la distancia no sea mayor a la de la camioneta
+        private bool ValidarDistanciaDeCamioneta(CompraDto compra, string patente)
+        {
+            var camioneta = CamionetaService.ObtenerListadoCamionetas().First(x => x.Patente == patente);
+            if (CalcularDistanciaEntrePuntos(compra) > camioneta.DistanciaMaxKM)
             {
                 return false;
             }
             return true;
         }
-        private double CalcularDistanciaEntrePuntos(ClienteDto cliente)
+
+        private double CalcularDistanciaEntrePuntos(CompraDto compra)
         {
             double lat1 = GradosARadianes(-31.25033);
             double lon1 = GradosARadianes(-61.4867);
-            double lat2 = GradosARadianes(cliente.LatitudGeografica);
-            double lon2 = GradosARadianes(cliente.LongitudGeografica);
+            double lat2 = GradosARadianes(compra.LatitudGeografica);
+            double lon2 = GradosARadianes(compra.LongitudGeografica);
 
             double radioTierra = 6371;
 
@@ -91,7 +191,6 @@ namespace EmpresaEnvíoService
             double distancia = radioTierra * c;
 
             return distancia;
-
         }
 
         //Metodo para pasar de grados a radianes
@@ -101,5 +200,48 @@ namespace EmpresaEnvíoService
         }
 
         #endregion Auxiliares
+
+        #region Intento combinacion para viajes
+
+        private ResultadoEnvio MejorCombinacion(List<CompraDto> compras, List<Camioneta> camionetas)
+        {
+            if (!compras.Any())
+                return null;
+            ResultadoEnvio mejorResultado = null;
+            foreach (var camioneta in camionetas)
+            {
+                var resultado = CombinacionParaCamioneta(compras, camioneta, new List<CompraDto>(), 0);
+                if (mejorResultado == null || resultado.PorcentajeOcupacion > mejorResultado.PorcentajeOcupacion)
+                    mejorResultado = resultado;
+            }
+            return mejorResultado;
+        }
+
+        private ResultadoEnvio CombinacionParaCamioneta(List<CompraDto> comprasRestantes, Camioneta camioneta, List<CompraDto> comprasSeleccionadas, double tamañoActual)
+        {
+            if (!comprasRestantes.Any() || tamañoActual > camioneta.TamañoCargaCM3)
+            {
+                return new ResultadoEnvio
+                {
+                    Patente = camioneta.Patente,
+                    PorcentajeOcupacion = tamañoActual / camioneta.TamañoCargaCM3 * 100,
+                    ListadoCompras = comprasSeleccionadas
+                };
+            }
+            var mejorResultado = CombinacionParaCamioneta(comprasRestantes.Skip(1).ToList(), camioneta, comprasSeleccionadas, tamañoActual);
+            var compra = comprasRestantes[0];
+            var producto = new ArchivoProducto().GetProductoDBList().First(x => x.CodProducto == compra.CodigoProducto);
+            if (ValidarDistanciaDeCamioneta(compra, camioneta.Patente) && tamañoActual + producto.AnchoCaja * producto.ProfundidadCaja * producto.AltoCaja * (compra.CantComprada) <= camioneta.TamañoCargaCM3)
+            {
+                var comprasNueva = new List<CompraDto>(comprasSeleccionadas) { compra };
+                var resultadoConCompra = CombinacionParaCamioneta(comprasRestantes.Skip(1).ToList(), camioneta, comprasNueva,
+                    tamañoActual + producto.AnchoCaja * producto.ProfundidadCaja * producto.AltoCaja * (compra.CantComprada));
+                if (resultadoConCompra.PorcentajeOcupacion > mejorResultado.PorcentajeOcupacion)
+                    mejorResultado = resultadoConCompra;
+            }
+            return mejorResultado;
+        }
+
+        #endregion Intento combinacion para viajes
     }
 }

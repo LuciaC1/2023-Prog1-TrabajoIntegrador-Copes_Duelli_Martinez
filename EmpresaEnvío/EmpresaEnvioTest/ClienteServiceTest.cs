@@ -1,15 +1,13 @@
-using EmpresaEnvíoService;
 using EmpresaEnvÍoDto;
-using EmpresaEnvíoData;
-
-using System;
+using EmpresaEnvíoService;
 
 namespace EmpresaEnvioTest
 
 {
     public class ClienteServiceTest
     {
-        ClienteService service;
+        private ClienteService service;
+
         [SetUp]
         public void Setup()
         {
@@ -21,18 +19,18 @@ namespace EmpresaEnvioTest
         {
             ClienteDto clienteDto = new ClienteDto()
             {
-                DNI=44305328,
-                Nombre="Santiago",
-                Apellido="Martinez",
-                Email="santmartinez48@gmail.com",
-                Telefono=349269420,
-                LatitudGeografica= -31.25033,
-                LongitudGeografica= -61.4867,
-                FechaNacimiento=DateTime.Now,
+                DNI = 44305328,
+                Nombre = "Santiago",
+                Apellido = "Martinez",
+                Email = "santmartinez48@gmail.com",
+                Telefono = 349269420,
+                LatitudGeografica = -31.25033,
+                LongitudGeografica = -61.4867,
+                FechaNacimiento = DateTime.Now,
             };
 
             service.CrearCliente(clienteDto);
-            var validacion=service.EliminarCliente(44305328);
+            var validacion = service.EliminarCliente(44305328);
 
             Assert.That(validacion.Resultado, Is.True);
         }

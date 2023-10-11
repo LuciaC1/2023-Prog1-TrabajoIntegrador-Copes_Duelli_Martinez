@@ -5,13 +5,30 @@ namespace EmpresaEnvíoService
 {
     public class ProductoService
     {
-        ArchivoProducto archivo;
+        #region Constructor
+
+        private ArchivoProducto archivo;
+
         public ProductoService()
         {
             archivo = new ArchivoProducto();
         }
-        public ProductoDto AñadirProducto(ProductoDto productoDto)
+
+        #endregion Constructor
+
+        // Crear producto (POST)
+        public ValidacionProducto AñadirProducto(ProductoDto productoDto)
         {
+            Validacion validacion = productoDto.IsValid();
+            ValidacionProducto validacionProducto = new()
+            {
+                Errores = validacion.Errores,
+                Resultado = validacion.Resultado
+            };
+            if (validacionProducto.Errores.Count > 0)
+            {
+                return validacionProducto;
+            }
             List<ProductoDB> listaProductos = archivo.GetProductoDBList();
             ProductoDB productoDB = new ProductoDB()
             {
@@ -24,17 +41,26 @@ namespace EmpresaEnvíoService
                 PrecioUnitario = productoDto.PrecioUnitario,
                 StockMinimo = productoDto.StockMinimo,
                 StockTotal = productoDto.StockTotal,
-                FechaCreacion = DateTime.Now,
+                FechaCreacion = DateTime.Now
             };
+            productoDto.CodProducto = productoDB.CodProducto;
             listaProductos.Add(productoDB);
             archivo.SaveProductoDB(listaProductos);
-            return productoDto;
+            validacionProducto.Resultado = true;
+            validacionProducto.Producto = productoDto;
+            return validacionProducto;
         }
-        public ValidacionModProducto ActualizarStock(int codProducto, int stockNuevo)
+
+        // Actualizar producto (PUT)
+        public ValidacionProducto ActualizarStock(int codProducto, int stockNuevo)
         {
-            ValidacionModProducto validacion = new();
+            ValidacionProducto validacion = new();
             List<ProductoDB> listaProductoDB = archivo.GetProductoDBList();
             ProductoDB producto = listaProductoDB.FirstOrDefault(u => u.CodProducto == codProducto);
+            if (stockNuevo < 0)
+            {
+                validacion.Errores.Add(new Error() { ErrorDetail = "El producto no puede tener un stock negativo" });
+            }
             if (producto == default)
             {
                 validacion.Errores.Add(new Error() { ErrorDetail = "El producto a actualizar stock no existe" });
@@ -45,26 +71,26 @@ namespace EmpresaEnvíoService
                 validacion.Errores.Add(new Error() { ErrorDetail = "El producto a actualizar stock ha sido eliminado" });
                 return validacion;
             }
-
-            if (stockNuevo < 0)
+            if (validacion.Errores.Count > 0)
             {
-                validacion.Errores.Add(new Error() { ErrorDetail = "El producto no puede tener un stock negativo" });
                 return validacion;
             }
             listaProductoDB.Find(u => u.CodProducto == codProducto).StockTotal = stockNuevo;
             listaProductoDB.Find(u => u.CodProducto == codProducto).FechaActualizacion = DateTime.Now;
             var productoEditado = listaProductoDB.Find(u => u.CodProducto == codProducto);
             archivo.SaveProductoDB(listaProductoDB);
-            var productoStockActualizado = new ProductoDto();
-            productoStockActualizado.MarcaProducto = productoEditado.MarcaProducto;
-            productoStockActualizado.CodProducto = productoEditado.CodProducto;
-            productoStockActualizado.NombreProducto = productoEditado.NombreProducto;
-            productoStockActualizado.ProfundidadCaja = productoEditado.ProfundidadCaja;
-            productoStockActualizado.AnchoCaja = productoEditado.AnchoCaja;
-            productoStockActualizado.AltoCaja = productoEditado.AltoCaja;
-            productoStockActualizado.PrecioUnitario = productoEditado.PrecioUnitario;
-            productoStockActualizado.StockMinimo = productoEditado.StockMinimo;
-            productoStockActualizado.StockTotal = productoEditado.StockTotal;
+            var productoStockActualizado = new ProductoDto()
+            {
+                MarcaProducto = productoEditado.MarcaProducto,
+                CodProducto = productoEditado.CodProducto,
+                NombreProducto = productoEditado.NombreProducto,
+                ProfundidadCaja = productoEditado.ProfundidadCaja,
+                AnchoCaja = productoEditado.AnchoCaja,
+                AltoCaja = productoEditado.AltoCaja,
+                PrecioUnitario = productoEditado.PrecioUnitario,
+                StockMinimo = productoEditado.StockMinimo,
+                StockTotal = productoEditado.StockTotal
+            };
             validacion.Producto = productoStockActualizado;
             validacion.Resultado = true;
             return validacion;

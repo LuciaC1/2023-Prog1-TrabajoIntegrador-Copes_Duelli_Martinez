@@ -5,15 +5,29 @@ namespace EmpresaEnvíoService
 {
     public class ClienteService
     {
-        ArchivoCliente archivo;
+        #region Constructor
+
+        private ArchivoCliente archivo;
+
         public ClienteService()
         {
             archivo = new ArchivoCliente();
         }
-        public ClienteDto CrearCliente(ClienteDto clienteDto)
+
+        #endregion Constructor
+
+        //Crear cliente (POST)
+        public ValidacionCliente CrearCliente(ClienteDto clienteDto)
         {
-            List<ClienteDB> listaClientes = archivo.GetClienteDBList();
-            ClienteDB clienteDB = new ClienteDB()
+            ValidacionCliente validaciónCliente = new ValidacionCliente();
+            var listaClientes = archivo.GetClienteDBList();
+            if (listaClientes.Any(x => x.DNI == clienteDto.DNI))
+            {
+                validaciónCliente.Errores.Add(new Error() { ErrorDetail = "El cliente con ese DNI ya existe" });
+                validaciónCliente.Resultado = false;
+                return validaciónCliente;
+            }
+            ClienteDB clienteDB = new()
             {
                 DNI = clienteDto.DNI,
                 Nombre = clienteDto.Nombre,
@@ -23,40 +37,48 @@ namespace EmpresaEnvíoService
                 LatitudGeografica = clienteDto.LatitudGeografica,
                 LongitudGeografica = clienteDto.LongitudGeografica,
                 FechaNacimiento = clienteDto.FechaNacimiento,
-                FechaCreacion = DateTime.Now,
+                FechaCreacion = DateTime.Now
             };
             listaClientes.Add(clienteDB);
             archivo.SaveClienteDB(listaClientes);
-            return clienteDto;
+            validaciónCliente.Cliente = clienteDto;
+            validaciónCliente.Resultado = true;
+            return validaciónCliente;
         }
+
+        //Eliminar cliente (DELETE)
         public Validacion EliminarCliente(int dni)
         {
-            Validacion validacion = new Validacion();
+            Validacion validacion = new();
             List<ClienteDB> listaClientesDB = archivo.GetClienteDBList();
             ClienteDB cliente = listaClientesDB.FirstOrDefault(x => x.DNI == dni);
             if (cliente == null)
             {
-                validacion.Errores.Add(new Error() { ErrorDetail = "El cliente a eliminar no existe" });
+                validacion.Errores.Add(new Error() { ErrorDetail = $"El cliente de dni {dni} a eliminar no existe" });
                 return validacion;
             }
-            if (cliente.FechaEliminacion != DateTime.MinValue)
+
+            if (cliente.FechaEliminacion != null)
             {
-                validacion.Errores.Add(new Error() { ErrorDetail = "El cliente ya ha sido eliminado previamente" });
+                validacion.Errores.Add(new Error() { ErrorDetail = $"El cliente de dni {dni} ya ha sido eliminado previamente" });
+                validacion.Resultado = true;
                 return validacion;
             }
-            listaClientesDB.FirstOrDefault(x => x.DNI == dni).FechaEliminacion = DateTime.Now;
+            listaClientesDB.First(x => x.DNI == dni).FechaEliminacion = DateTime.Now;
             archivo.SaveClienteDB(listaClientesDB);
             validacion.Resultado = true;
             return validacion;
         }
-        public ValidacionModCliente EditarCliente(ClienteDto clienteModificado)
+
+        //Editar cliente (PUT)
+        public ValidacionCliente EditarCliente(ClienteDto clienteModificado)
         {
-            ValidacionModCliente validCliente = new ValidacionModCliente();
+            ValidacionCliente validCliente = new();
             List<ClienteDB> listaClientesDB = archivo.GetClienteDBList();
             var clienteAEditar = listaClientesDB.FirstOrDefault(u => u.DNI == clienteModificado.DNI);
-            if (clienteAEditar == default && clienteAEditar.FechaEliminacion != DateTime.MinValue)
+            if (clienteAEditar == default || clienteAEditar.FechaEliminacion != null)
             {
-                validCliente.Errores.Add(new Error() { ErrorDetail = "El cliente a editar no existe" });
+                validCliente.Errores.Add(new Error() { ErrorDetail = "El cliente a editar no existe o fue eliminado" });
                 return validCliente;
             }
             clienteAEditar = ModificarCliente(clienteModificado, clienteAEditar);
@@ -64,19 +86,17 @@ namespace EmpresaEnvíoService
             listaClientesDB.Add(clienteAEditar);
             listaClientesDB = listaClientesDB.OrderBy(x => x.FechaCreacion).ToList();
             archivo.SaveClienteDB(listaClientesDB);
+
+            //Consulta: Se debe actualizar la long y lat de las compras que se relacionen con el cliente?
+
             clienteModificado.DNI = clienteAEditar.DNI;
-            clienteModificado.Apellido = clienteAEditar.Apellido;
-            clienteModificado.Nombre = clienteAEditar.  Nombre;
-            clienteModificado.Email = clienteAEditar.Email;
-            clienteModificado.Telefono  = clienteAEditar.Telefono;
-            clienteModificado.LongitudGeografica = clienteAEditar.LongitudGeografica;
-            clienteModificado.LatitudGeografica= clienteAEditar.LatitudGeografica;
             validCliente.Cliente = clienteModificado;
             validCliente.Resultado = true;
-            validCliente.Cliente = new ClienteDto();
-            validCliente.Cliente.DNI = clienteAEditar.DNI;
+            validCliente.Cliente = clienteModificado;
             return validCliente;
         }
+
+        //Obtener listado de clientes (GET)
         public List<ClienteDto> ObtenerListadoClientes()
         {
             return (archivo.GetClienteDBList().Select(X => new ClienteDto()
@@ -88,20 +108,26 @@ namespace EmpresaEnvíoService
                 Telefono = X.Telefono,
                 LatitudGeografica = X.LatitudGeografica,
                 LongitudGeografica = X.LongitudGeografica,
+                FechaNacimiento = X.FechaNacimiento
             }).ToList());
         }
 
+        #region Auxiliares
 
+        //Modificar valores del cliente guardado en archivo
         private ClienteDB ModificarCliente(ClienteDto clienteMod, ClienteDB clienteAMod)
         {
-            clienteAMod.Nombre = string.IsNullOrEmpty(clienteMod.Nombre) ? clienteMod.Nombre : clienteAMod.Nombre;
-            clienteAMod.Apellido = string.IsNullOrEmpty(clienteMod.Apellido) ? clienteMod.Apellido : clienteAMod.Apellido;
-            clienteAMod.Email = string.IsNullOrEmpty(clienteMod.Email) ? clienteMod.Email : clienteAMod.Email;
-            clienteAMod.Telefono = (clienteMod.Telefono==0) ? clienteMod.Telefono : clienteAMod.Telefono;
-            clienteAMod.LatitudGeografica = (clienteMod.LatitudGeografica==0) ? clienteMod.LatitudGeografica : clienteAMod.LatitudGeografica;
-            clienteAMod.LongitudGeografica = (clienteMod.LongitudGeografica==0) ? clienteAMod.LongitudGeografica : clienteAMod.LongitudGeografica;
+            clienteAMod.Nombre = clienteMod.Nombre;
+            clienteAMod.Apellido = clienteMod.Apellido;
+            clienteAMod.Email = clienteMod.Email;
+            clienteAMod.Telefono = clienteMod.Telefono;
+            clienteAMod.LatitudGeografica = clienteMod.LatitudGeografica;
+            clienteAMod.LongitudGeografica = clienteMod.LongitudGeografica;
+            clienteAMod.FechaNacimiento = clienteMod.FechaNacimiento;
             clienteAMod.FechaActualizacion = DateTime.Now;
             return clienteAMod;
         }
+
+        #endregion Auxiliares
     }
 }

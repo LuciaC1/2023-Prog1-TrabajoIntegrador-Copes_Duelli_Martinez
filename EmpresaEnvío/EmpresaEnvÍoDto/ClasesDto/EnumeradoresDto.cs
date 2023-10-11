@@ -1,8 +1,8 @@
 ﻿namespace EmpresaEnvÍoDto
 {
-	public enum  EstadosCompraDto
-	{
-		OPEN,
-		READY_TO_DISPATCH
-	}
+    public enum EstadosCompraDto
+    {
+        OPEN = 1,
+        READY_TO_DISPATCH
+    }
 }

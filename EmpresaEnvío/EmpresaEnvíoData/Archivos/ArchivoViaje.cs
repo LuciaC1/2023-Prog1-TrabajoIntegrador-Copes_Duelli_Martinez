@@ -1,5 +1,4 @@
-﻿
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace EmpresaEnvíoData
 {
@@ -41,6 +40,5 @@ namespace EmpresaEnvíoData
         }
 
         #endregion Save ViajeDB
-
     }
 }

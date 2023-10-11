@@ -7,7 +7,7 @@ namespace EmpresaEnvíoAPI.Controllers
     [ApiController]
     public class CamionetaController : ControllerBase
     {
-        CamionetaService service;
+        private CamionetaService service;
 
         public CamionetaController()
         {
@@ -17,7 +17,7 @@ namespace EmpresaEnvíoAPI.Controllers
         [HttpGet]
         public IActionResult GetCamionetas()
         {
-            return Ok(service.ObtenerListadoCamionetas());
+            return Ok(CamionetaService.ObtenerListadoCamionetas());
         }
     }
 }

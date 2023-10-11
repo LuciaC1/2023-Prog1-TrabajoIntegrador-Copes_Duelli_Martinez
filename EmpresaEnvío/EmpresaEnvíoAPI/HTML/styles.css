@@ -8,13 +8,13 @@
     font-family: 'Courier New', Courier, monospace;
 }
 
-h1{
+h1 {
     margin-left: 2%;
     font-size: medium;
 }
 
 .sticky-header {
-    background-color:black;
+    background-color: black;
     color: #fff;
     text-align: left;
     padding: 10px 0;
@@ -35,18 +35,18 @@ h1{
 }
 
 .grid-item {
-    width: calc(50% - 10px); 
-    margin-bottom: 20px; 
+    width: calc(50% - 10px);
+    margin-bottom: 20px;
     box-sizing: border-box;
-    border: transparent; 
+    border: transparent;
     padding: 10px;
 }
 
 .grid-item-clickable {
-    width: calc(50% - 10px); 
-    margin-bottom: 20px; 
+    width: calc(50% - 10px);
+    margin-bottom: 20px;
     box-sizing: border-box;
-    border: transparent; 
+    border: transparent;
     padding: 10px;
 }
 
@@ -54,9 +54,11 @@ h1{
     .grid-item {
         width: 100%;
     }
-    body{
+
+    body {
         height: 150vh;
     }
+
     .grid-item-clickable {
         width: 100%;
     }
@@ -80,11 +82,12 @@ h1{
     transition: background-color 0.3s ease-out, transform 0.3s ease-out;
 }
 
-.form-container:hover {
-    background-color: #000;
-    transform: scale(1.05);
-    color: white;
-}
+    .form-container:hover {
+        background-color: #000;
+        transform: scale(1.05);
+        color: white;
+    }
+
 .form-item {
     margin: 10px 0;
     padding: 10px;
@@ -94,10 +97,10 @@ h1{
     box-sizing: border-box;
 }
 
-.form-item:focus {
-    outline: none;
-    border-color: lightgreen;
-}
+    .form-item:focus {
+        outline: none;
+        border-color: lightgreen;
+    }
 
 .form-buttons {
     margin-top: 20px;
@@ -105,24 +108,25 @@ h1{
     flex-direction: column;
 }
 
-.form-buttons button {
-    margin-top: 15px;
-    padding: 10px 20px;
-    border: 3px solid #000;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: #fff;
-    color: #000;
-    transition: background-color 0.3s ease-out, border-color 0.3s ease-out, color 0.3s ease-out, transform 0.3s ease-out;
-}
+    .form-buttons button {
+        margin-top: 15px;
+        padding: 10px 20px;
+        border: 3px solid #000;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #fff;
+        color: #000;
+        transition: background-color 0.3s ease-out, border-color 0.3s ease-out, color 0.3s ease-out, transform 0.3s ease-out;
+    }
 
-.form-buttons button:hover {
-    background-color: #15ff92;
-    border-color: transparent;
-    color: black;
-    font-weight: bolder;
-    transform: scale(1.05);
-}
-#formResponse{
+        .form-buttons button:hover {
+            background-color: #15ff92;
+            border-color: transparent;
+            color: black;
+            font-weight: bolder;
+            transform: scale(1.05);
+        }
+
+#formResponse {
     display: none;
 }

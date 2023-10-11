@@ -1,55 +1,79 @@
 ﻿using EmpresaEnvíoData;
 using EmpresaEnvÍoDto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmpresaEnvíoService
 {
     public class CompraService
     {
-        ArchivoCompra archivoCompra;
-        ArchivoProducto archivoProducto;
+        #region Constructor
+
+        private ArchivoCompra archivoCompra;
+        private ArchivoProducto archivoProducto;
+
         public CompraService()
         {
             archivoCompra = new ArchivoCompra();
             archivoProducto = new ArchivoProducto();
         }
-        //Metodo que da de alta una compra (registra una compra) y valida que haya stock del item a comprar.
-        public CompraDto RegistrarCompra(CompraDto compra)
+
+        #endregion Constructor
+
+        //Metodo que da de alta una compra (POST)
+        public ValidacionCompra RegistrarCompra(CompraDto compra)
         {
-            StockPrecioProducto stockPrecio = new StockPrecioProducto();
-            stockPrecio = ValidarStockProducto(compra.CodigoProducto, compra.CantComprada);
+            ValidacionCompra validacionCompra = new();
+            ProductoDB producto = archivoProducto.GetProductoDBList().FirstOrDefault(p => p.CodProducto == compra.CodigoProducto);
+            if (producto == default)
+            {
+                validacionCompra.Errores.Add(new Error() { ErrorDetail = "El producto a comprar no existe" });
+                return validacionCompra;
+            }
+            StockPrecioProducto stockPrecio = ValidarStockProducto(producto, compra.CantComprada);
             if (!stockPrecio.ResultadoStock)
             {
-                throw new Exception("No hay suficiente stock del producto");
+                validacionCompra.Errores.Add(new Error() { ErrorDetail = "No hay stock del producto suficiente" });
+                return validacionCompra;
             }
+            ClienteDB cliente = new ArchivoCliente().GetClienteDBList().FirstOrDefault(c => c.DNI == compra.DNICliente);
+            if (cliente == default)
+            {
+                validacionCompra.Errores.Add(new Error() { ErrorDetail = "El cliente no existe" });
+                return validacionCompra;
+            }
+            compra.LatitudGeografica = cliente.LatitudGeografica;
+            compra.LongitudGeografica = cliente.LongitudGeografica;
             compra.MontoTotal = compra.CantComprada * stockPrecio.PrecioUnitario;
             compra.CalcularTotalDescuentoConIVA();
             List<CompraDB> listaComprasDB = archivoCompra.GetCompraDBList();
-            CompraDB compraDB = new CompraDB()
+            CompraDB compraDB = new()
             {
-             CodigoProducto= listaComprasDB.Count +1,
-             CantComprada= compra.CantComprada,
-             CodigoCompra= compra.CodigoCompra,
-             DNICliente= compra.DNICliente,
-             EstadoCompra= EstadosCompraDB.OPEN,
-             MontoTotal= compra.MontoTotal,
-             FechaCreacion = DateTime.Now
+                CodigoProducto = compra.CodigoProducto,
+                CantComprada = compra.CantComprada,
+                CodigoCompra = listaComprasDB.Count + 1,
+                DNICliente = compra.DNICliente,
+                EstadoCompra = EstadosCompraDB.OPEN,
+                MontoTotal = compra.MontoTotal,
+                FechaEntregaSolicitada = compra.FechaEntregaSolicitada,
+                FechaCreacion = DateTime.Now,
+                FechaCompra = DateTime.Now
             };
             listaComprasDB.Add(compraDB);
             archivoCompra.SaveCompraDB(listaComprasDB);
-            return compra;
+            validacionCompra.Resultado = true;
+            compra.CodigoCompra = compraDB.CodigoCompra;
+            compra.FechaCompra = compraDB.FechaCompra;
+            compra.EstadoCompra = (EstadosCompraDto)compraDB.EstadoCompra;
+            validacionCompra.Compra = compra;
+            return validacionCompra;
         }
+
+        #region Auxiliares
+
         //Validacion del stock del producto
-        private StockPrecioProducto ValidarStockProducto(int codigoProducto, int cantidadComprada)
+        private StockPrecioProducto ValidarStockProducto(ProductoDB producto, int cantidadComprada)
         {
-            List<ProductoDB> productos = archivoProducto.GetProductoDBList();
-            StockPrecioProducto stockPrecioProducto = new StockPrecioProducto();
-            var producto = productos.FirstOrDefault(p => p.CodProducto == codigoProducto);
-            if (producto == null || (producto.StockTotal)-cantidadComprada < producto.StockMinimo)
+            StockPrecioProducto stockPrecioProducto = new();
+            if (producto.StockTotal - cantidadComprada < 0 || producto.StockTotal < producto.StockMinimo)
             {
                 stockPrecioProducto.ResultadoStock = false;
                 return stockPrecioProducto;
@@ -58,5 +82,7 @@ namespace EmpresaEnvíoService
             stockPrecioProducto.ResultadoStock = true;
             return stockPrecioProducto;
         }
+
+        #endregion Auxiliares
     }
 }

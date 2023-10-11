@@ -1,6 +1,6 @@
-﻿namespace EmpresaEnvÍoDto
+﻿namespace EmpresaEnvíoData
 {
-    public class CamionetaDto
+    public class Camioneta
     {
         public string Patente { get; set; }
         public string Nombre { get; set; }

@@ -11,28 +11,38 @@
         public double PrecioUnitario { get; set; }
         public int StockMinimo { get; set; }
         public int StockTotal { get; set; }
+
         public Validacion IsValid()
         {
-            Validacion validacion = new Validacion()
+            Validacion validacion = new()
             {
                 Errores = new List<Error>()
             };
-            if (Double.IsNegative(AltoCaja))
+            if (AltoCaja <= 0)
             {
-                validacion.Errores.Add(new Error() { ErrorDetail = "La altura esta en numeros negativos" });
+                validacion.Errores.Add(new Error() { ErrorDetail = "La altura debe ser mayor a cero" });
             }
-            if (Double.IsNegative(AnchoCaja))
+            if (AnchoCaja <= 0)
             {
-                validacion.Errores.Add(new Error() { ErrorDetail = "El ancho esta en numeros negativos" });
+                validacion.Errores.Add(new Error() { ErrorDetail = "El ancho debe ser mayor a cero" });
             }
-            if (Double.IsNegative(ProfundidadCaja))
+            if (ProfundidadCaja <= 0)
             {
-                validacion.Errores.Add(new Error() { ErrorDetail = "La profundidad esta en numeros negativos" });
+                validacion.Errores.Add(new Error() { ErrorDetail = "La profundidad debe ser mayor a cero" });
             }
-            if (Double.IsNegative(PrecioUnitario))
+            if (PrecioUnitario <= 0)
             {
-                validacion.Errores.Add(new Error() { ErrorDetail = "El precio esta en numeros negativos" });
+                validacion.Errores.Add(new Error() { ErrorDetail = "El precio debe ser mayor a cero" });
             }
+            if (StockMinimo <= 0)
+            {
+                validacion.Errores.Add(new Error() { ErrorDetail = "El stock mínimo debe ser mayor a cero" });
+            }
+            if (int.IsNegative(StockTotal))
+            {
+                validacion.Errores.Add(new Error() { ErrorDetail = "El stock total no puede ser negativo" });
+            }
+            if (validacion.Errores.Count == 0) validacion.Resultado = true;
             return validacion;
         }
     }

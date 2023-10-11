@@ -2,7 +2,7 @@
 {
     public enum EstadosCompraDB
     {
-        OPEN,
+        OPEN = 1,
         READY_TO_DISPATCH
     }
 }

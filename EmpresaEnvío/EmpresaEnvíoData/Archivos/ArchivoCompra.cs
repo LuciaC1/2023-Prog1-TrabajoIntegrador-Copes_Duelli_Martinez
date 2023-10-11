@@ -1,5 +1,4 @@
-﻿
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace EmpresaEnvíoData
 {
@@ -17,7 +16,6 @@ namespace EmpresaEnvíoData
         }
 
         #endregion Constructor
-
 
         #region Get CompraDB
 
@@ -42,6 +40,5 @@ namespace EmpresaEnvíoData
         }
 
         #endregion Save CompraDB
-
     }
 }
