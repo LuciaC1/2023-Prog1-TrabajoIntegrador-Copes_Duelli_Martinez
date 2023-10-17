@@ -43,9 +43,10 @@ namespace EmpresaEnvíoService
                 return validacionViaje;
             }
 
-            //Buscar compras estado open
-            List<CompraDto> listadoCompras = archivoCompra.GetCompraDBList().Where(x => x.EstadoCompra == EstadosCompraDB.OPEN)
-                .OrderBy(x => x.FechaEntregaSolicitada).Select(x => new CompraDto()
+            //Buscar compras estado open entre esas fechas
+            List<CompraDto> listadoCompras = archivoCompra.GetCompraDBList()
+                .Where(x => x.EstadoCompra == EstadosCompraDB.OPEN && x.FechaEntregaSolicitada > fechaDesde && x.FechaEntregaSolicitada < fechaHasta)
+                .Select(x => new CompraDto()
                 {
                     CodigoProducto = x.CodigoProducto,
                     DNICliente = x.DNICliente,
@@ -53,6 +54,8 @@ namespace EmpresaEnvíoService
                     CodigoCompra = x.CodigoCompra,
                     CantComprada = x.CantComprada,
                     EstadoCompra = EstadosCompraDto.OPEN,
+                    LatitudGeografica = x.LatitudGeografica,
+                    LongitudGeografica = x.LongitudGeografica,
                     MontoTotal = x.MontoTotal,
                     FechaCompra = x.FechaCompra
                 }).ToList();
@@ -201,12 +204,10 @@ namespace EmpresaEnvíoService
 
         #endregion Auxiliares
 
-        #region Intento combinacion para viajes
+        #region Combinacion para viajes
 
         private ResultadoEnvio MejorCombinacion(List<CompraDto> compras, List<Camioneta> camionetas)
         {
-            if (!compras.Any())
-                return null;
             ResultadoEnvio mejorResultado = null;
             foreach (var camioneta in camionetas)
             {
@@ -241,7 +242,6 @@ namespace EmpresaEnvíoService
             }
             return mejorResultado;
         }
-
-        #endregion Intento combinacion para viajes
+        #endregion Combinacion para viajes
     }
 }

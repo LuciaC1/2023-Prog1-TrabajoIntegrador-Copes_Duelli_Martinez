@@ -24,7 +24,11 @@ namespace EmpresaEnvíoAPI.Controllers
                 return BadRequest(valid.Errores);
             }
             var clienteNuevo = service.CrearCliente(clienteDto);
-            return Ok(clienteNuevo);
+            if (!clienteNuevo.Resultado)
+            {
+                return BadRequest(clienteNuevo.Errores);
+            }
+            return Ok(clienteNuevo.Cliente);
         }
 
         [HttpPut("")]

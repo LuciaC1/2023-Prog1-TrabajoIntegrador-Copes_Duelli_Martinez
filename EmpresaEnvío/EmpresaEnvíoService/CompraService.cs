@@ -40,6 +40,11 @@ namespace EmpresaEnvíoService
                 validacionCompra.Errores.Add(new Error() { ErrorDetail = "El cliente no existe" });
                 return validacionCompra;
             }
+            if (cliente.FechaEliminacion != null)
+            {
+                validacionCompra.Errores.Add(new Error() { ErrorDetail = "El cliente ha sido eliminado previamente" });
+                return validacionCompra;
+            }
             compra.LatitudGeografica = cliente.LatitudGeografica;
             compra.LongitudGeografica = cliente.LongitudGeografica;
             compra.MontoTotal = compra.CantComprada * stockPrecio.PrecioUnitario;
@@ -52,6 +57,8 @@ namespace EmpresaEnvíoService
                 CodigoCompra = listaComprasDB.Count + 1,
                 DNICliente = compra.DNICliente,
                 EstadoCompra = EstadosCompraDB.OPEN,
+                LatitudGeografica = compra.LatitudGeografica,
+                LongitudGeografica = compra.LongitudGeografica,
                 MontoTotal = compra.MontoTotal,
                 FechaEntregaSolicitada = compra.FechaEntregaSolicitada,
                 FechaCreacion = DateTime.Now,
@@ -64,6 +71,9 @@ namespace EmpresaEnvíoService
             compra.FechaCompra = compraDB.FechaCompra;
             compra.EstadoCompra = (EstadosCompraDto)compraDB.EstadoCompra;
             validacionCompra.Compra = compra;
+            List<ProductoDB> listaProductosDB = archivoProducto.GetProductoDBList();
+            listaProductosDB.First(x => x.CodProducto == compra.CodigoProducto).StockTotal -= compra.CantComprada;
+            archivoProducto.SaveProductoDB(listaProductosDB);
             return validacionCompra;
         }
 

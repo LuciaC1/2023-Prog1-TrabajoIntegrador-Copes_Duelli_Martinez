@@ -66,7 +66,7 @@ namespace EmpresaEnvíoService
                 validacion.Errores.Add(new Error() { ErrorDetail = "El producto a actualizar stock no existe" });
                 return validacion;
             }
-            if (producto.FechaEliminacion != DateTime.MinValue)
+            if (producto.FechaEliminacion != null)
             {
                 validacion.Errores.Add(new Error() { ErrorDetail = "El producto a actualizar stock ha sido eliminado" });
                 return validacion;

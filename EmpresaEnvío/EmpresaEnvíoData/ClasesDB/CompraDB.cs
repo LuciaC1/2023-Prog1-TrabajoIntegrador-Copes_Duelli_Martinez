@@ -9,6 +9,8 @@
         public int CantComprada { get; set; }
         public DateTime FechaEntregaSolicitada { get; set; }
         public EstadosCompraDB EstadoCompra { get; set; }
+        public double LatitudGeografica { get; set; }
+        public double LongitudGeografica { get; set; }
         public double MontoTotal { get; set; }
         public DateTime FechaCreacion { get; set; }
         public DateTime? FechaEliminacion { get; set; }

@@ -25,7 +25,7 @@
             double totalConIVA = CalcularTotalConIVA();
             if (CantComprada > 4)
             {
-                totalConIVA += totalConIVA * Descuento;
+                totalConIVA -= totalConIVA * Descuento;
             }
             MontoTotal = totalConIVA;
         }
