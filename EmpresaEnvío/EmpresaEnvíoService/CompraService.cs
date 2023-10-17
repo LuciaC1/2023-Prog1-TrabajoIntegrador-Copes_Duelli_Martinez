@@ -80,7 +80,7 @@ namespace EmpresaEnvíoService
         #region Auxiliares
 
         //Validacion del stock del producto
-        private StockPrecioProducto ValidarStockProducto(ProductoDB producto, int cantidadComprada)
+        private static StockPrecioProducto ValidarStockProducto(ProductoDB producto, int cantidadComprada)
         {
             StockPrecioProducto stockPrecioProducto = new();
             if (producto.StockTotal - cantidadComprada < 0 || producto.StockTotal < producto.StockMinimo)
@@ -91,6 +91,25 @@ namespace EmpresaEnvíoService
             stockPrecioProducto.PrecioUnitario = producto.PrecioUnitario;
             stockPrecioProducto.ResultadoStock = true;
             return stockPrecioProducto;
+        }
+
+        public List<CompraDto> GetComprasDtoOpen(DateTime fechaDesde, DateTime fechaHasta)
+        {
+            return archivoCompra.GetCompraDBList().
+                Where(x => x.EstadoCompra == EstadosCompraDB.OPEN && x.FechaEntregaSolicitada > fechaDesde && x.FechaEntregaSolicitada < fechaHasta)
+                .Select(x => new CompraDto()
+                {
+                    CodigoProducto = x.CodigoProducto,
+                    DNICliente = x.DNICliente,
+                    FechaEntregaSolicitada = x.FechaEntregaSolicitada,
+                    CodigoCompra = x.CodigoCompra,
+                    CantComprada = x.CantComprada,
+                    EstadoCompra = EstadosCompraDto.OPEN,
+                    LatitudGeografica = x.LatitudGeografica,
+                    LongitudGeografica = x.LongitudGeografica,
+                    MontoTotal = x.MontoTotal,
+                    FechaCompra = x.FechaCompra
+                }).ToList();
         }
 
         #endregion Auxiliares

@@ -39,6 +39,15 @@ namespace EmpresaEnvíoData
             File.WriteAllText(pathArchivo, saveData);
         }
 
+
+        public void SaveProductoDBSingle(ProductoDB producto)
+        {
+            List<ProductoDB> listado = GetProductoDBList();
+            listado.RemoveAll(x => x.CodProducto == producto.CodProducto);
+            listado.Add(producto);
+            SaveProductoDB(listado);
+        }
+
         #endregion Save ProductoDB
     }
 }

@@ -10,6 +10,7 @@ namespace EmpresaEnvíoService
         private ArchivoViaje archivoViaje;
         private CamionetaService camionetaService;
         private ClienteService clienteService;
+        private CompraService compraService;
         private ArchivoCompra archivoCompra;
 
         public ViajeService()
@@ -17,6 +18,7 @@ namespace EmpresaEnvíoService
             archivoViaje = new ArchivoViaje();
             camionetaService = new CamionetaService();
             clienteService = new ClienteService();
+            compraService = new CompraService();
             archivoCompra = new ArchivoCompra();
         }
 
@@ -35,7 +37,8 @@ namespace EmpresaEnvíoService
                 return validacionViaje;
             }
             //Buscar camionetas disponibles en esas fechas
-            List<Camioneta> camionetas = CamionetasDisponibles(fechaDesde, fechaHasta);
+            List<ViajeDB> listaViajes = archivoViaje.GetViajeDBList();
+            List<Camioneta> camionetas = CamionetasDisponibles(listaViajes, fechaDesde, fechaHasta);
             if (camionetas.Count == 0)
             {
                 validacionViaje.Resultado = false;
@@ -44,21 +47,7 @@ namespace EmpresaEnvíoService
             }
 
             //Buscar compras estado open entre esas fechas
-            List<CompraDto> listadoCompras = archivoCompra.GetCompraDBList() //SUGERENCIA: ESTE METODO YA PODRÍA DEVOLVER EL DTO PARA SER PROCESADO.
-                .Where(x => x.EstadoCompra == EstadosCompraDB.OPEN && x.FechaEntregaSolicitada > fechaDesde && x.FechaEntregaSolicitada < fechaHasta)
-                .Select(x => new CompraDto()
-                {
-                    CodigoProducto = x.CodigoProducto,
-                    DNICliente = x.DNICliente,
-                    FechaEntregaSolicitada = x.FechaEntregaSolicitada,
-                    CodigoCompra = x.CodigoCompra,
-                    CantComprada = x.CantComprada,
-                    EstadoCompra = EstadosCompraDto.OPEN,
-                    LatitudGeografica = x.LatitudGeografica,
-                    LongitudGeografica = x.LongitudGeografica,
-                    MontoTotal = x.MontoTotal,
-                    FechaCompra = x.FechaCompra
-                }).ToList();
+            List<CompraDto> listadoCompras = compraService.GetComprasDtoOpen(fechaDesde, fechaHasta);
 
             //Verificar que haya compras a enviar
             if (listadoCompras.Count == 0)
@@ -99,37 +88,43 @@ namespace EmpresaEnvíoService
             archivoCompra.SaveCompraDB(listadoComprasDB);
 
             //Registro viaje
-            List<ViajeDB> listadoViajesDB = archivoViaje.GetViajeDBList();
-            ViajeDto viaje = new ViajeDto()
+            ViajeDB viajeDB = new ViajeDB()
             {
-                CodigoUnicoViaje = listadoViajesDB.Count + 1,
+                CodigoUnicoViaje = listaViajes.Count + 1,
                 FechaEntregasDesde = fechaDesde,
                 FechaEntregasHasta = fechaHasta,
-                ListadoCompras = resultado.ListadoCompras.Select(x => x.CodigoCompra).ToList(),
                 Patente = resultado.Patente,
-                PorcentajeOcupacionCarga = resultado.PorcentajeOcupacion
-            };
-            listadoViajesDB.Add(new ViajeDB()
-            {
-                CodigoUnicoViaje = viaje.CodigoUnicoViaje,
-                FechaEntregasDesde = viaje.FechaEntregasDesde,
-                FechaEntregasHasta = viaje.FechaEntregasHasta,
-                Patente = viaje.Patente,
-                PorcentajeOcupacionCarga = viaje.PorcentajeOcupacionCarga,
-                ListadoCompras = viaje.ListadoCompras,
+                PorcentajeOcupacionCarga = resultado.PorcentajeOcupacion,
+                ListadoCompras = resultado.ListadoCompras.Select(x => x.CodigoCompra).ToList(),
                 FechaCreacion = DateTime.Now
-            });
-
-            //Guardar listado de viajes
-            archivoViaje.SaveViajeDB(listadoViajesDB);
+            };
+            listaViajes.Add(viajeDB);
+            archivoViaje.SaveViajeDB(listaViajes);
 
             //Devolver resultado correcto de viaje
             validacionViaje.Resultado = true;
-            validacionViaje.Viaje = viaje;
+            validacionViaje.Viaje = ViajeDBtoViajeDto(viajeDB);
+
             return validacionViaje;
         }
 
         #region Auxiliares
+
+        // Metodo para cambiar un viajeDB a viajeDto
+        private ViajeDto ViajeDBtoViajeDto(ViajeDB viajeDB)
+        {
+            ViajeDto viaje = new ViajeDto()
+            {
+                CodigoUnicoViaje = viajeDB.CodigoUnicoViaje,
+                FechaEntregasDesde = viajeDB.FechaEntregasDesde,
+                FechaEntregasHasta = viajeDB.FechaEntregasHasta,
+                ListadoCompras = viajeDB.ListadoCompras,
+                Patente = viajeDB.Patente,
+                PorcentajeOcupacionCarga = viajeDB.PorcentajeOcupacionCarga
+            };
+            return viaje;
+        }
+
 
         //Metodo para validar viaje entre fechas
         private Validacion ValidarViaje_Fechas(DateTime fechad, DateTime fechah)
@@ -150,9 +145,8 @@ namespace EmpresaEnvíoService
         }
 
         //Metodo para buscar camionetas disponibles para el viaje
-        private List<Camioneta> CamionetasDisponibles(DateTime fechaDesde, DateTime fechaHasta)
+        private List<Camioneta> CamionetasDisponibles(List<ViajeDB> listaViajes, DateTime fechaDesde, DateTime fechaHasta)
         {
-            List<ViajeDB> listaViajes = archivoViaje.GetViajeDBList();
             List<Camioneta> listaCamionetas = CamionetaService.ObtenerListadoCamionetas();
             foreach (Camioneta camioneta in listaCamionetas)
             {
@@ -208,17 +202,18 @@ namespace EmpresaEnvíoService
 
         private ResultadoEnvio MejorCombinacion(List<CompraDto> compras, List<Camioneta> camionetas)
         {
+            List<ProductoDB> productos = new ArchivoProducto().GetProductoDBList();
             ResultadoEnvio mejorResultado = null;
             foreach (var camioneta in camionetas)
             {
-                var resultado = CombinacionParaCamioneta(compras, camioneta, new List<CompraDto>(), 0);
+                var resultado = CombinacionParaCamioneta(compras, camioneta, new List<CompraDto>(), 0, productos);
                 if (mejorResultado == null || resultado.PorcentajeOcupacion > mejorResultado.PorcentajeOcupacion)
                     mejorResultado = resultado;
             }
             return mejorResultado;
         }
 
-        private ResultadoEnvio CombinacionParaCamioneta(List<CompraDto> comprasRestantes, Camioneta camioneta, List<CompraDto> comprasSeleccionadas, double tamañoActual)
+        private ResultadoEnvio CombinacionParaCamioneta(List<CompraDto> comprasRestantes, Camioneta camioneta, List<CompraDto> comprasSeleccionadas, double tamañoActual, List<ProductoDB> productos)
         {
             if (!comprasRestantes.Any() || tamañoActual > camioneta.TamañoCargaCM3)
             {
@@ -229,14 +224,14 @@ namespace EmpresaEnvíoService
                     ListadoCompras = comprasSeleccionadas
                 };
             }
-            var mejorResultado = CombinacionParaCamioneta(comprasRestantes.Skip(1).ToList(), camioneta, comprasSeleccionadas, tamañoActual);
+            var mejorResultado = CombinacionParaCamioneta(comprasRestantes.Skip(1).ToList(), camioneta, comprasSeleccionadas, tamañoActual, productos);
             var compra = comprasRestantes[0];
-            var producto = new ArchivoProducto().GetProductoDBList().First(x => x.CodProducto == compra.CodigoProducto);
+            var producto = productos.First(x => x.CodProducto == compra.CodigoProducto);
             if (ValidarDistanciaDeCamioneta(compra, camioneta.Patente) && tamañoActual + producto.AnchoCaja * producto.ProfundidadCaja * producto.AltoCaja * (compra.CantComprada) <= camioneta.TamañoCargaCM3)
             {
                 var comprasNueva = new List<CompraDto>(comprasSeleccionadas) { compra };
                 var resultadoConCompra = CombinacionParaCamioneta(comprasRestantes.Skip(1).ToList(), camioneta, comprasNueva,
-                    tamañoActual + producto.AnchoCaja * producto.ProfundidadCaja * producto.AltoCaja * (compra.CantComprada));
+                    tamañoActual + producto.AnchoCaja * producto.ProfundidadCaja * producto.AltoCaja * (compra.CantComprada), productos);
                 if (resultadoConCompra.PorcentajeOcupacion > mejorResultado.PorcentajeOcupacion)
                     mejorResultado = resultadoConCompra;
             }

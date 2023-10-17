@@ -87,7 +87,6 @@ namespace EmpresaEnvíoService
             listaClientesDB = listaClientesDB.OrderBy(x => x.FechaCreacion).ToList();
             archivo.SaveClienteDB(listaClientesDB);
 
-            //Consulta: Se debe actualizar la long y lat de las compras que se relacionen con el cliente?
 
             clienteModificado.DNI = clienteAEditar.DNI;
             validCliente.Cliente = clienteModificado;
@@ -115,7 +114,7 @@ namespace EmpresaEnvíoService
         #region Auxiliares
 
         //Modificar valores del cliente guardado en archivo
-        private ClienteDB ModificarCliente(ClienteDto clienteMod, ClienteDB clienteAMod)
+        private static ClienteDB ModificarCliente(ClienteDto clienteMod, ClienteDB clienteAMod)
         {
             clienteAMod.Nombre = clienteMod.Nombre;
             clienteAMod.Apellido = clienteMod.Apellido;

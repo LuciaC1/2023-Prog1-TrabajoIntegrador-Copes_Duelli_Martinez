@@ -30,9 +30,9 @@ namespace EmpresaEnvíoService
                 return validacionProducto;
             }
             List<ProductoDB> listaProductos = archivo.GetProductoDBList();
-            ProductoDB productoDB = new ProductoDB()
+            ProductoDB productoDB = new()
             {
-                CodProducto = listaProductos.Count() + 1,
+                CodProducto = listaProductos.Count + 1,
                 NombreProducto = productoDto.NombreProducto,
                 MarcaProducto = productoDto.MarcaProducto,
                 AltoCaja = productoDto.AltoCaja,
@@ -55,18 +55,17 @@ namespace EmpresaEnvíoService
         public ValidacionProducto ActualizarStock(int codProducto, int stockNuevo)
         {
             ValidacionProducto validacion = new();
-            List<ProductoDB> listaProductoDB = archivo.GetProductoDBList();
-            ProductoDB producto = listaProductoDB.FirstOrDefault(u => u.CodProducto == codProducto);
+            ProductoDB productoDB = archivo.GetProductoDBList().FirstOrDefault(u => u.CodProducto == codProducto);
             if (stockNuevo < 0)
             {
                 validacion.Errores.Add(new Error() { ErrorDetail = "El producto no puede tener un stock negativo" });
             }
-            if (producto == default)
+            if (productoDB == default)
             {
                 validacion.Errores.Add(new Error() { ErrorDetail = "El producto a actualizar stock no existe" });
                 return validacion;
             }
-            if (producto.FechaEliminacion != null)
+            if (productoDB.FechaEliminacion != null)
             {
                 validacion.Errores.Add(new Error() { ErrorDetail = "El producto a actualizar stock ha sido eliminado" });
                 return validacion;
@@ -76,14 +75,17 @@ namespace EmpresaEnvíoService
                 return validacion;
             }
 
-            //SUGERENCIAS: En bases de datos esto es poco performante (incluso con archivos), por cada modificación vamos a buscar a la base el mismo dato, les recomiendo cambiarlo a obtenerlo una sola vez, hacer todo lo que debamos y luego guardarlo. ESTO SE TRADUCE A TODOS LOS DEMAS LUGARES DONDE HACEN ESTO
-            listaProductoDB.Find(u => u.CodProducto == codProducto).StockTotal = stockNuevo;
-            listaProductoDB.Find(u => u.CodProducto == codProducto).FechaActualizacion = DateTime.Now;
-            var productoEditado = listaProductoDB.Find(u => u.CodProducto == codProducto);
-            
-            //SUGERENCIAS: ESTE MÉTODO PODRÍA DEVOLVER EL DTO YA ARMADO PARA QUE EL MAPEO QUEDE EN UN SOLO LUGAR Y NO DEBAN HACERLOS IEMPRE.
-            archivo.SaveProductoDB(listaProductoDB);
-            var productoStockActualizado = new ProductoDto()
+            productoDB.StockTotal = stockNuevo;
+            productoDB.FechaActualizacion = DateTime.Now;
+            archivo.SaveProductoDBSingle(productoDB);
+            validacion.Producto = ProductoDBtoProductoDto(productoDB);
+            validacion.Resultado = true;
+            return validacion;
+        }
+
+        private static ProductoDto ProductoDBtoProductoDto(ProductoDB productoEditado)
+        {
+            return new ProductoDto()
             {
                 MarcaProducto = productoEditado.MarcaProducto,
                 CodProducto = productoEditado.CodProducto,
@@ -95,9 +97,6 @@ namespace EmpresaEnvíoService
                 StockMinimo = productoEditado.StockMinimo,
                 StockTotal = productoEditado.StockTotal
             };
-            validacion.Producto = productoStockActualizado;
-            validacion.Resultado = true;
-            return validacion;
         }
     }
 }
