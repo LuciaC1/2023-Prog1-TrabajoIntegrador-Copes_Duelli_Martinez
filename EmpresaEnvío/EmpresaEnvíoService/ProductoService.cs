@@ -75,9 +75,13 @@ namespace EmpresaEnvíoService
             {
                 return validacion;
             }
+
+            //SUGERENCIAS: En bases de datos esto es poco performante (incluso con archivos), por cada modificación vamos a buscar a la base el mismo dato, les recomiendo cambiarlo a obtenerlo una sola vez, hacer todo lo que debamos y luego guardarlo. ESTO SE TRADUCE A TODOS LOS DEMAS LUGARES DONDE HACEN ESTO
             listaProductoDB.Find(u => u.CodProducto == codProducto).StockTotal = stockNuevo;
             listaProductoDB.Find(u => u.CodProducto == codProducto).FechaActualizacion = DateTime.Now;
             var productoEditado = listaProductoDB.Find(u => u.CodProducto == codProducto);
+            
+            //SUGERENCIAS: ESTE MÉTODO PODRÍA DEVOLVER EL DTO YA ARMADO PARA QUE EL MAPEO QUEDE EN UN SOLO LUGAR Y NO DEBAN HACERLOS IEMPRE.
             archivo.SaveProductoDB(listaProductoDB);
             var productoStockActualizado = new ProductoDto()
             {

@@ -44,7 +44,7 @@ namespace EmpresaEnvíoService
             }
 
             //Buscar compras estado open entre esas fechas
-            List<CompraDto> listadoCompras = archivoCompra.GetCompraDBList()
+            List<CompraDto> listadoCompras = archivoCompra.GetCompraDBList() //SUGERENCIA: ESTE METODO YA PODRÍA DEVOLVER EL DTO PARA SER PROCESADO.
                 .Where(x => x.EstadoCompra == EstadosCompraDB.OPEN && x.FechaEntregaSolicitada > fechaDesde && x.FechaEntregaSolicitada < fechaHasta)
                 .Select(x => new CompraDto()
                 {
