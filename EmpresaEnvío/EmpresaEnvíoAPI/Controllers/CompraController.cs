@@ -16,7 +16,7 @@ namespace EmpresaEnvíoAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult AltaCompra(CompraDto compra)
+        public IActionResult AltaCompra([FromBody] CompraDto compra)
         {
             Validacion validacion = compra.IsValid();
             if (!validacion.Resultado)

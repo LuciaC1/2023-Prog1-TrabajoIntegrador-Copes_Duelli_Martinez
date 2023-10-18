@@ -31,8 +31,8 @@ namespace EmpresaEnvíoAPI.Controllers
             return Ok(validacionProducto.Producto);
         }
 
-        [HttpPut("")]
-        public IActionResult ActualizarStock([FromBody] int codProducto, int stockNuevo)
+        [HttpPut("{codProducto}")]
+        public IActionResult ActualizarStock(int codProducto, [FromBody] int stockNuevo)
         {
             var productoActualizado = service.ActualizarStock(codProducto, stockNuevo);
             if (!productoActualizado.Resultado)

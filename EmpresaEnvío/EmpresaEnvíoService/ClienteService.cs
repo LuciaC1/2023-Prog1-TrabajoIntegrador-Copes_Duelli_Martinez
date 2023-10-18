@@ -71,16 +71,17 @@ namespace EmpresaEnvíoService
         }
 
         //Editar cliente (PUT)
-        public ValidacionCliente EditarCliente(ClienteDto clienteModificado)
+        public ValidacionCliente EditarCliente(int dni, ClienteDto clienteModificado)
         {
             ValidacionCliente validCliente = new();
             List<ClienteDB> listaClientesDB = archivo.GetClienteDBList();
-            var clienteAEditar = listaClientesDB.FirstOrDefault(u => u.DNI == clienteModificado.DNI);
+            var clienteAEditar = listaClientesDB.FirstOrDefault(u => u.DNI == dni);
             if (clienteAEditar == default || clienteAEditar.FechaEliminacion != null)
             {
                 validCliente.Errores.Add(new Error() { ErrorDetail = "El cliente a editar no existe o fue eliminado" });
                 return validCliente;
             }
+            clienteModificado.DNI = dni;
             clienteAEditar = ModificarCliente(clienteModificado, clienteAEditar);
             listaClientesDB.RemoveAll(x => x.DNI == clienteAEditar.DNI);
             listaClientesDB.Add(clienteAEditar);

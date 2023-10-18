@@ -31,15 +31,15 @@ namespace EmpresaEnvíoAPI.Controllers
             return Ok(clienteNuevo.Cliente);
         }
 
-        [HttpPut("")]
-        public IActionResult ActualizarCliente([FromBody] ClienteDto clienteModificado)
+        [HttpPut("{dni}")]
+        public IActionResult ActualizarCliente(int dni, [FromBody] ClienteDto clienteModificado)
         {
             Validacion valid = clienteModificado.IsValid();
             if (!valid.Resultado)
             {
                 return BadRequest(valid.Errores);
             }
-            ValidacionCliente validacionCliente = service.EditarCliente(clienteModificado);
+            ValidacionCliente validacionCliente = service.EditarCliente(dni, clienteModificado);
 
             if (!validacionCliente.Resultado)
             {
