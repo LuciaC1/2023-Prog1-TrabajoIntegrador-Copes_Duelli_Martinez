@@ -1,30 +1,103 @@
-﻿body {
-    background-color: #f0f0f0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 120vh;
+﻿* {
     margin: 0;
-    font-family: 'Courier New', Courier, monospace;
+    padding: 0;
+    box-sizing: border-box;
 }
-
-h1 {
-    margin-left: 2%;
-    font-size: medium;
-}
-
-.sticky-header {
+body {
     background-color: black;
-    color: #fff;
-    text-align: left;
-    padding: 10px 0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 100;
-    font: 1.5em;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+header {
+    background: white;
+    width: 100%;
+    height: 10%;
+    position: fixed;
+    z-index: 100;
+}
+
+nav {
+    float: left;
+}
+
+    nav ul {
+        list-style: none;
+        overflow: visible;
+    }
+
+        nav ul li {
+            float: left;
+            font-size: 16px;
+        }
+
+            nav ul li a {
+                display: block;
+                padding: 22px;
+                color: black;
+                text-decoration: none;
+            }
+
+            nav ul li:hover {
+                background-color: black;
+            }
+
+                nav ul li:hover a {
+                    color: white;
+                    font-size: 18px;
+                }
+
+            nav ul li, nav ul li a {
+                transition: font-size 1s ease, color 0.5s ease, background 0.5s ease;
+            }
+
+                nav ul li:last-child span {
+                    margin-top: 22px;
+                    color: black;
+                    float: left;
+                    margin-left: 250px;
+                    background-color: white;
+                    position: absolute;
+                    color: black;
+                    cursor: default;
+                    pointer-events: none;
+                }
+
+                nav ul li:last-child:hover span {
+                    background-color: white;
+                    color: black;
+                    font-size: inherit;
+                }
+
+.submenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    list-style: none;
+    border-color: white;
+    border: 1.5px groove white;
+}
+
+    .submenu li {
+        float: none;
+    }
+
+        .submenu li a {
+            white-space: nowrap;
+        }
+
+.MenuIntegrantes:hover .submenu {
+    display: block;
+    position: relative;
+}
+
+.submenu li:hover {
+    background-color: white;
+}
+
+    .submenu li:hover a {
+        color: black;
+        font-size: 18px;
+    }
 
 .grid {
     display: flex;
