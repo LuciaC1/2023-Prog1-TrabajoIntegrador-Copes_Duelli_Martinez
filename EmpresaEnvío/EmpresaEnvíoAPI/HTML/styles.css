@@ -3,7 +3,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 120vh;
+    height: 90vh;
     margin: 0;
     font-family: 'Courier New', Courier, monospace;
 }
@@ -48,15 +48,18 @@ h1 {
     box-sizing: border-box;
     border: transparent;
     padding: 10px;
+    
 }
 
-@media (max-width: 700px) {
+@media (max-width: 750px) {
     .grid-item {
-        width: 100%;
+        width: 70%;
+        margin:  auto;
+
     }
 
     body {
-        height: 150vh;
+        height: 105vh;
     }
 
     .grid-item-clickable {
@@ -84,8 +87,9 @@ h1 {
 
     .form-container:hover {
         background-color: #000;
-        transform: scale(1.05);
         color: white;
+        color: white;
+        border-color: transparent;
     }
 
 .form-item {
@@ -126,7 +130,3 @@ h1 {
             font-weight: bolder;
             transform: scale(1.05);
         }
-
-#formResponse {
-    display: none;
-}
