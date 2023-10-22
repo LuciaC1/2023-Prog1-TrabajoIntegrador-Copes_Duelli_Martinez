@@ -15,6 +15,13 @@ namespace EmpresaEnvíoAPI.Controllers
             service = new ProductoService();
         }
 
+        [HttpGet("")]
+        public IActionResult ProductosStockMenor()
+        {
+            return Ok(service.StockMínimo());
+        }
+
+
         [HttpPost("")]
         public IActionResult AgregarProducto([FromBody] ProductoDto productoDto)
         {

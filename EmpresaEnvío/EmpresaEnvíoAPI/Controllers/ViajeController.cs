@@ -6,11 +6,11 @@ namespace EmpresaEnvíoAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class ViajesController : ControllerBase
+    public class ViajeController : ControllerBase
     {
         private ViajeService viajeService;
 
-        public ViajesController()
+        public ViajeController()
         {
             viajeService = new ViajeService();
         }

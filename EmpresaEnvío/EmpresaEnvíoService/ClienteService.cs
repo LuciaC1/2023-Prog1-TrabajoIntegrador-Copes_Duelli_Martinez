@@ -88,11 +88,9 @@ namespace EmpresaEnvíoService
             listaClientesDB = listaClientesDB.OrderBy(x => x.FechaCreacion).ToList();
             archivo.SaveClienteDB(listaClientesDB);
 
-
             clienteModificado.DNI = clienteAEditar.DNI;
             validCliente.Cliente = clienteModificado;
             validCliente.Resultado = true;
-            validCliente.Cliente = clienteModificado;
             return validCliente;
         }
 

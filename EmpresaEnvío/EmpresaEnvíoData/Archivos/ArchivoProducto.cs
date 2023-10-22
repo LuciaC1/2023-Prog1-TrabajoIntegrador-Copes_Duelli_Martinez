@@ -39,7 +39,6 @@ namespace EmpresaEnvíoData
             File.WriteAllText(pathArchivo, saveData);
         }
 
-
         public void SaveProductoDBSingle(ProductoDB producto)
         {
             List<ProductoDB> listado = GetProductoDBList();

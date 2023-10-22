@@ -16,6 +16,22 @@ namespace EmpresaEnvíoService
 
         #endregion Constructor
 
+
+        // Listar productos con stock menor al stock mínimo (GET)
+        public List<ProductoDto> StockMínimo()
+        {
+            List<ProductoDB> listaProductos = archivo.GetProductoDBList();
+            List<ProductoDto> listaProductosDto = new();
+            foreach (ProductoDB producto in listaProductos)
+            {
+                if (producto.StockTotal < producto.StockMinimo)
+                {
+                    listaProductosDto.Add(ProductoDBtoProductoDto(producto));
+                }
+            }
+            return listaProductosDto;
+        }
+
         // Crear producto (POST)
         public ValidacionProducto AñadirProducto(ProductoDto productoDto)
         {
@@ -75,7 +91,7 @@ namespace EmpresaEnvíoService
                 return validacion;
             }
 
-            productoDB.StockTotal = stockNuevo;
+            productoDB.StockTotal += stockNuevo;
             productoDB.FechaActualizacion = DateTime.Now;
             archivo.SaveProductoDBSingle(productoDB);
             validacion.Producto = ProductoDBtoProductoDto(productoDB);

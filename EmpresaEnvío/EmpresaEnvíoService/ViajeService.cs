@@ -125,7 +125,6 @@ namespace EmpresaEnvíoService
             return viaje;
         }
 
-
         //Metodo para validar viaje entre fechas
         private Validacion ValidarViaje_Fechas(DateTime fechad, DateTime fechah)
         {
@@ -148,7 +147,7 @@ namespace EmpresaEnvíoService
         private List<Camioneta> CamionetasDisponibles(List<ViajeDB> listaViajes, DateTime fechaDesde, DateTime fechaHasta)
         {
             List<Camioneta> listaCamionetas = CamionetaService.ObtenerListadoCamionetas();
-            foreach (Camioneta camioneta in listaCamionetas)
+            foreach (Camioneta camioneta in listaCamionetas.ToList())
             {
                 var listCamioneta = listaViajes.Where(x => x.Patente == camioneta.Patente);
                 if (listCamioneta.Any(x => (x.FechaEntregasDesde < fechaHasta && x.FechaEntregasHasta > fechaDesde)
@@ -237,6 +236,7 @@ namespace EmpresaEnvíoService
             }
             return mejorResultado;
         }
+
         #endregion Combinacion para viajes
     }
 }
