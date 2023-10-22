@@ -155,9 +155,6 @@ table tr td:first-child {
     border: transparent;
     flex-direction: row;
 }
-.grid>*{
-    flex: 1 1 300px;
-}
 
 .grid-item {
     width: calc(50% - 10px);
