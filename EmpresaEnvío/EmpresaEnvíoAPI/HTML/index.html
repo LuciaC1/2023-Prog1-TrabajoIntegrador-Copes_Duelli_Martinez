@@ -6,13 +6,13 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="sticky-header">
-        <nav>
+    <header>
+        <nav id="navegacion">
             <ul>
-                <li><a href="#">Ver Productos</a></li>
-                <li><a href="#">Actualizar Stock</a></li>
-                <li><a href="#">Registrar Compra</a></li>
-                <li><a href="#">Asignación de Viajes</a></li>
+                <li><a href="VerProductos.html">Ver Productos</a></li>
+                <li><a href="ActStockProducto.html">Actualizar Stock</a></li>
+                <li><a href="RegistrarCompra.html">Registrar Compra</a></li>
+                <li><a href="AsignarViaje.html">Asignación de Viajes</a></li>
                 <li class="MenuIntegrantes">
                     <a>Integrantes</a>
                     <ul class="submenu">
@@ -23,26 +23,23 @@
                 </li>
             </ul>
         </nav>
+        <div class="menu-icon" id="menu">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
     </header>
-    <div class="TituloPrincipal">
-        <table>
-            <tr>
-                <td><p>Empresa Envíos</p></td>
-                <td><img src="icono2.png" alt="Imagen1" /></td>
-            </tr>
-        </table>
-    </div>
-    <div class="texto-derecha-abajo">Trabajo Final Programación I</div>
-    <div class="grid">
-        <div class="grid-item-clickable">
-            <p><a href="forms.html">Forms</a></p>
+    <main>
+        <div class="TituloPrincipal">
+            <table>
+                <tr>
+                    <td><p class="textoTitulo">Empresa Envíos</p></td>
+                    <td><img src="icono2.png" alt="Imagen1" /></td>
+                </tr>
+            </table>
         </div>
-        <div class="grid-item-clickable">
-            <div class="grid-item-clickable">
-                <p><a href="forms.html">Forms</a></p>
-            </div>
-        </div>
-    </div>
-    <script src="index.js"></script>
+        <div class="texto-derecha-abajo">Trabajo Final Programación I</div>
+        <script src="Index.js"></script>
+    </main>
 </body>
 </html>

@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>EmpresaEnvío</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="VerProductos.html">Ver Productos</a></li>
+                <li><a href="ActStockProducto.html">Actualizar Stock</a></li>
+                <li><a href="AsignarViaje.html">Asignación de Viajes</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+    <div class="formulario">
+        <div class="grid">
+            <div class="grid-item">
+                <div class="form-container">
+                    <form id="formActCliente">
+                        <h2>Registro de compra</h2>
+                        <br>
+                        <label for="codigoProducto" class="form-label">Código producto</label>
+                        <input class="form-item" type="number" pattern="[0-9]*" name="codigoProducto" id="codigoProducto" required>
+                        <label for="dniCliente" class="form-label">DNI cliente</label>
+                        <input class="form-item" type="number" pattern="[0-9]*" name="dniCliente" id="dniCliente" required>
+                        <label for="cantidad" class="form-label">Cantidad comprada</label>
+                        <input class="form-item" type="number" pattern="[0-9]*" name="cantidad" id="cantidad" required>
+                        <label for="fechaEsperada" class="form-label">Fecha esperada de entrega</label>
+                        <input class="form-item" type="date" name="fechaEsperada" id="fechaEsperada" required>
+                        <div class="form-buttons">
+                            <button type="submit">Submit</button>
+                            <button type="reset">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="grid-item">
+                <div class="form-container">
+                        <h2>Resultados</h2>
+                        <div id="formResponse"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="RegistroCompra.js"></script>
+    </main>
+</body>
+</html>

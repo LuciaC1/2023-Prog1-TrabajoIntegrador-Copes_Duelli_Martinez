@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -11,8 +11,8 @@
             <ul>
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="VerProductos.html">Ver Productos</a></li>
+                <li><a href="ActStockProducto.html">Actualizar Stock</a></li>
                 <li><a href="RegistrarCompra.html">Registrar Compra</a></li>
-                <li><a href="AsignarViaje.html">Asignación de Viajes</a></li>
             </ul>
         </nav>
     </header>
@@ -22,12 +22,12 @@
                 <div class="grid-item">
                     <div class="form-container">
                         <form id="formActCliente">
-                            <h2>Actualizar Stock Producto</h2>
+                            <h2>Asignar viaje</h2>
                             <br>
-                            <label for="codigoProducto" class="form-label">Código producto</label>
-                            <input class="form-item" type="number" pattern="[0-9]*" name="codigoProducto" id="codigoProducto"required>
-                            <label for="nuevoStock" class="form-label">Nuevo Stock</label>
-                            <input class="form-item" type="number" pattern="[0-9]*" name="nuevoStock" id="nuevoStock"required>
+                            <label for="fechaDesde" class="form-label">Fecha desde</label>
+                            <input class="form-item" type="date" name="fechaInicio" id="fechaDesde"required>
+                            <label for="fechaHasta" class="form-label">Fecha hasta</label>
+                            <input class="form-item" type="date" name="fechaFin" id="fechaHasta"required>
                             <div class="form-buttons">
                                 <button type="submit">Submit</button>
                                 <button type="reset">Reset</button>
@@ -43,7 +43,7 @@
                 </div>
             </div>
         </div>
-        <script src="ActualizarStock.js"></script>
+        <script src="AsignarViaje.js"></script>
     </main>
 </body>
 </html>
