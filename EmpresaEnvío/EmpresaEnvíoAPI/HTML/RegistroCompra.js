@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     console.info("Loaded")
 });
 
-document.getElementById('formActCliente').addEventListener('submit', function (event) {
+document.getElementById('formRegistroCompra').addEventListener('submit', function (event) {
     event.preventDefault();
 
     const compra = {

@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     console.info("Loaded")
 });
 
-document.getElementById('formActCliente').addEventListener('submit', function (event) {
+document.getElementById('formAsignarViaje').addEventListener('submit', function (event) {
     event.preventDefault();
     const fechaDesde = document.getElementById('fechaDesde').value;
     const fechaHasta = document.getElementById('fechaHasta').value;

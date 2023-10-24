@@ -46,10 +46,5 @@ function showData(data) {
 }
 
 function showError(error) {
-    var respuesta = document.getElementById('formResponse');
-    respuesta.innerHTML = `
-        <p> Error!</p>
-        <br>
-        <p>${error.message}</p>
-    `;
+    console.log(error);
 }

@@ -16,7 +16,7 @@ body {
 header {
     background: white;
     width: 100%;
-    height: 69px;
+    height: 68px;
     position: fixed;
     z-index: 100;
 }
@@ -119,14 +119,26 @@ nav ul li:last-child:hover span {
     font-size: 70px;
     width: 150px;
     height: 50px;
-    color: white;
     position: center;
     margin-left: 2px;
     margin-right: 150px;
     margin-bottom: 100px;
 }
 
-img {
+.tituloIndice {
+    color: white;
+}
+
+.tituloIndiceSmall {
+    color: white;
+    display: none;
+}
+
+.tituloIndice tr:first-child {
+    text-align: center;
+}
+
+table img {
     margin-top: 10px;
     margin-left: 20px;
     width: 220px;
@@ -162,6 +174,7 @@ table tr td:first-child {
     box-sizing: border-box;
     border: transparent;
     padding: 10px;
+    min-width: 300px;
 }
 
 .formulario {
@@ -176,9 +189,9 @@ table tr td:first-child {
     border: 3px solid #000;
     border-radius: 5px;
     padding: 20px;
-    width: 300px;
     text-align: center;
     transition: background-color 0.3s ease-out, transform 0.3s ease-out;
+    max-width: 450px;
 }
 
 .form-container:hover {
@@ -263,7 +276,7 @@ thead th{
     font-weight: bold;
     padding-top: 100px;
     border-radius: 5px;
-    color: rgba(109, 255, 153, 0.9);
+    color: lightgreen;
 }
 tr:nth-child(even) {
     background-color: rgba(109, 255, 153, 0.5);
@@ -322,11 +335,23 @@ tr:first-child{
     .titulo-productos{
         padding-left: 60px;
     }
+    nav ul li a{
+        padding-left: 15px;
+        padding-right: 15px;
+    }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 790px) {
+    nav ul li a{
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+}
+
+@media (max-width: 710px) {
     .grid-item {
-        width: 100%;
+        margin-left: 1%;  
+        width: 65%;
     }
     .tabla-productos{
         font-size: 10px;
@@ -342,5 +367,35 @@ tr:first-child{
     }
     .titulo-productos{
         padding-left: 40px;
+    }
+    nav ul li a{
+        padding-left: 4px;
+        padding-right: 4px;
+    }
+}
+
+@media (max-width: 580px) {
+    .tituloIndice {
+        display: none;
+    }
+
+    table tr td:first-child {
+        border-right: none;
+    }
+    table tr:first-child {
+        border-bottom: 5px solid white;
+    }
+
+    .tituloIndiceSmall {
+        display: block;
+        overflow: hidden;
+        width: 100%;
+    }
+    #imagenCamionetaS{
+        background: none;
+    }
+    .textoTitulo {
+        font-size: 50px;
+        margin-bottom: 30px;
     }
 }
