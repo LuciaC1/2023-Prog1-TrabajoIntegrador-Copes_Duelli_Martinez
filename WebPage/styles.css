@@ -393,6 +393,10 @@ tr:first-child{
 }
 
 @media (max-width: 710px) {
+    .grid{
+        margin-left: 10%;
+    }
+
     .grid-item {
         margin-left: 1%;  
         width: 65%;
