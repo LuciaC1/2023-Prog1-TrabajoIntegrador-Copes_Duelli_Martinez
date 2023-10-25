@@ -6,13 +6,18 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
+    <header id="header">
+        <button id="menuButton" class="menuButton" onclick="toggleMenu()">
+            <div class="buttonDiv1"></div>
+            <div class="buttonDiv2"></div>
+            <div class="buttonDiv3"></div>
+        </button>
         <nav id="navegacion">
             <ul>
-                <li><a href="VerProductos.html">Ver Productos</a></li>
-                <li><a href="ActStockProducto.html">Actualizar Stock</a></li>
-                <li><a href="RegistrarCompra.html">Registrar Compra</a></li>
-                <li><a href="AsignarViaje.html">Asignación de Viajes</a></li>
+                <li><a href="html/VerProductos.html">Ver Productos</a></li>
+                <li><a href="html/ActStockProducto.html">Actualizar Stock</a></li>
+                <li><a href="html/RegistrarCompra.html">Registrar Compra</a></li>
+                <li><a href="html/AsignarViaje.html">Asignación de Viajes</a></li>
                 <li class="MenuIntegrantes">
                     <a>Integrantes</a>
                     <ul class="submenu">
@@ -29,7 +34,7 @@
             <table class="tituloIndice">
                 <tr>
                     <td><p class="textoTitulo">Empresa Envíos</p></td>
-                    <td><img src="icono2.png" alt="Imagen1" id="imagenCamioneta"/></td>
+                    <td><img src="resources/icono2.png" alt="Imagen1" id="imagenCamioneta"/></td>
                 </tr>
             </table>
             <table class="tituloIndiceSmall">
@@ -37,11 +42,12 @@
                     <td><p class="textoTitulo">Empresa Envíos</p></td>
                 </tr>
             <tr id="imagenCamionetaS">
-                <td><img src="icono2.png" alt="Imagen1" /></td>
+                <td><img src="resources/icono2.png" alt="Imagen1" /></td>
             </tr>
             </table>
         </div>
         <div class="texto-derecha-abajo">Trabajo Final Programación I</div>
     </main>
+    <script src="js/header.js"></script>
 </body>
 </html>

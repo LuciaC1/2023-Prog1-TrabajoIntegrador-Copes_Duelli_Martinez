@@ -3,13 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <title>EmpresaEnvío</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
-    <header>
-        <nav>
+    <header id="header">
+        <button id="menuButton" class="menuButton" onclick="toggleMenu()">
+            <div class="buttonDiv1"></div>
+            <div class="buttonDiv2"></div>
+            <div class="buttonDiv3"></div>
+        </button>
+        <nav id="navegacion">
             <ul>
-                <li><a href="index.html">Inicio</a></li>
+                <li><a href="../index.html">Inicio</a></li>
                 <li><a href="VerProductos.html">Ver Productos</a></li>
                 <li><a href="ActStockProducto.html">Actualizar Stock</a></li>
                 <li><a href="AsignarViaje.html">Asignación de Viajes</a></li>
@@ -47,7 +52,8 @@
             </div>
         </div>
     </div>
-    <script src="RegistroCompra.js"></script>
+    <script src="../js/RegistroCompra.js"></script>
     </main>
+    <script src="../js/header.js"></script>
 </body>
 </html>

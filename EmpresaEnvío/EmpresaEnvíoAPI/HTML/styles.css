@@ -5,7 +5,7 @@
 }
 
 body {
-    background-image: url(ImagenFondo.jpg);
+    background-image: url(resources/ImagenFondo.jpg);
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
@@ -14,21 +14,58 @@ body {
 }
 
 header {
-    background: white;
     width: 100%;
     height: 68px;
     position: fixed;
     z-index: 100;
+    background: linear-gradient(to bottom, rgb(255, 255, 255,0.4) 0%, rgba(255, 255, 255, 0.1) 100%);
 }
 
-nav {
-    float: left;
-    display: flex;
+.menuButton{
+    height: 100%;
+    width: 75px;
+    background-color: transparent;
+    margin-left: 3px;
+    font-size: large;
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    border-spacing: 2px 10px;
+    display: none;
 }
+
+.menuButton:hover{
+    font-size: 20px;
+    font-weight: bolder;
+}
+
+.menuButton:focus{
+    outline: none;
+}
+
+header button div{
+    background: white;
+    height: 5px;
+    border-radius: 25px;
+    margin: 3px;
+    align-self: left;
+    width: 70%;
+    transition: 0.3s;
+    padding: 10px 0px px 0px;
+}
+header button:hover .buttonDiv1{
+    width: 70%;
+}
+header button:hover .buttonDiv2{
+    width: 60%;
+}
+header button:hover .buttonDiv3{
+    width: 40%;
+}
+
 
 nav ul {
     list-style: none;
-    overflow: visible;
 }
 
 nav ul li {
@@ -157,7 +194,7 @@ table tr td:first-child {
     bottom: 0;
     right: 0;
     margin: 10px;
-    z-index: 1000;
+    z-index: 99;
 }
 
 .grid {
@@ -191,7 +228,7 @@ table tr td:first-child {
     padding: 20px;
     text-align: center;
     transition: background-color 0.3s ease-out, transform 0.3s ease-out;
-    max-width: 450px;
+    max-width: 400px;
 }
 
 .form-container:hover {
@@ -371,6 +408,32 @@ tr:first-child{
     nav ul li a{
         padding-left: 4px;
         padding-right: 4px;
+    }
+}
+
+@media (max-width:666px){
+    header{
+        background: none;
+        width: 100%;
+    }
+    nav ul{
+        height: 100vh;
+        width: 100%;
+        background: rgba(248, 248, 248, 0.6);
+    }
+    nav ul li{
+        float: none;
+    }
+    .submenu li{
+        background: #000;
+    }
+    .submenu li:hover {
+        background-color: white;
+    }
+    
+    .submenu li:hover a {
+        color: black;
+        font-size: 18px;
     }
 }
 
