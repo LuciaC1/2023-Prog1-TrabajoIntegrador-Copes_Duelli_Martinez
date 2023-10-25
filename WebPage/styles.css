@@ -308,10 +308,9 @@ thead th{
 }
 
 .titulo-productos{
-    padding-left: 120px;
+    padding: 100px 20px 0px 120px;
     font-size: 30px;
     font-weight: bold;
-    padding-top: 100px;
     border-radius: 5px;
     color: lightgreen;
 }
