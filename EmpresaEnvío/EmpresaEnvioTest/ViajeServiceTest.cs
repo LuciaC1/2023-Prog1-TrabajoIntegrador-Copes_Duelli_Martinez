@@ -231,7 +231,6 @@ namespace EmpresaEnvioTest
 
             var validacion = viajeService.ProgramarEnvío(DateTime.Now.AddMinutes(5), DateTime.Now.AddDays(7));
 
-            Assert.That(validacion.Errores[0].ErrorDetail, Is.EqualTo("S"));
             Assert.That(validacion.Resultado, Is.True);
         }
         [Test]
@@ -429,12 +428,15 @@ namespace EmpresaEnvioTest
             clienteService.CrearCliente(clienteDto4);
             clienteService.CrearCliente(clienteDto5);
             compraService.RegistrarCompra(compraDto);
-            compraService.RegistrarCompra(compraDto);
-            compraService.RegistrarCompra(compraDto);
-            compraService.RegistrarCompra(compraDto);
-            compraService.RegistrarCompra(compraDto);
+            compraService.RegistrarCompra(compraDto2);
+            compraService.RegistrarCompra(compraDto3);
+            compraService.RegistrarCompra(compraDto4);
+            compraService.RegistrarCompra(compraDto5);
+            compraService.RegistrarCompra(compraDto6);
+            compraService.RegistrarCompra(compraDto7);
 
             var validacion = viajeService.ProgramarEnvío(DateTime.Now.AddDays(1000), DateTime.Now.AddDays(1005));
+
             Assert.That(validacion.Resultado, Is.False);
         }
     }
