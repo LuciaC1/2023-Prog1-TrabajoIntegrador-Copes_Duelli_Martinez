@@ -61,7 +61,7 @@ namespace EmpresaEnvíoService
             if (cliente.FechaEliminacion != null)
             {
                 validacion.Errores.Add(new Error() { ErrorDetail = $"El cliente de dni {dni} ya ha sido eliminado previamente" });
-                validacion.Resultado = true;
+                validacion.Resultado = false;
                 return validacion;
             }
             listaClientesDB.First(x => x.DNI == dni).FechaEliminacion = DateTime.Now;
