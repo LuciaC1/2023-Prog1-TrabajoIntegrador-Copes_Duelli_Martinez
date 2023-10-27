@@ -53,10 +53,6 @@ namespace EmpresaEnvíoAPI.Controllers
         {
             Validacion validacion = service.EliminarCliente(dni);
 
-            if (validacion.Resultado && validacion.Errores.Count > 0)
-            {
-                return BadRequest(validacion.Errores);
-            }
             if (!validacion.Resultado)
             {
                 return NotFound(validacion.Errores);
