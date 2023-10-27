@@ -1,11 +1,5 @@
-﻿using EmpresaEnvíoData;
-using EmpresaEnvÍoDto;
+﻿using EmpresaEnvÍoDto;
 using EmpresaEnvíoService;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmpresaEnvioTest
 {
@@ -38,6 +32,7 @@ namespace EmpresaEnvioTest
             var validacion = service.EliminarCliente(12345);
 
             Assert.That(validacion.Resultado, Is.True);
+            Assert.That(validacion.Errores, Is.Empty);
         }
 
         [Test]
@@ -60,6 +55,7 @@ namespace EmpresaEnvioTest
             var validacion = service.EliminarCliente(12345);
 
             Assert.That(validacion.Resultado, Is.False);
+            Assert.That(validacion.Errores[0].ErrorDetail, Is.EqualTo("El cliente de dni 12345 ya ha sido eliminado previamente"));
         }
         [Test]
         public void Add_Cliente_ShouldBeTrue()
@@ -79,6 +75,7 @@ namespace EmpresaEnvioTest
             var validacion = service.CrearCliente(clienteDto);
 
             Assert.That(validacion.Resultado, Is.True);
+            Assert.That(validacion.Errores, Is.Empty);
         }
         [Test]
         public void Add_Cliente_ShouldBeFalse()
@@ -99,6 +96,7 @@ namespace EmpresaEnvioTest
             var validacion = service.CrearCliente(clienteDto);
 
             Assert.That(validacion.Resultado, Is.False);
+            Assert.That(validacion.Errores[0].ErrorDetail, Is.EqualTo("El cliente con ese DNI ya existe"));
         }
         [Test]
         public void Update_Cliente_ShouldBeTrue()
@@ -127,9 +125,10 @@ namespace EmpresaEnvioTest
             };
 
             service.CrearCliente(clienteDto);
-            var validacion = service.EditarCliente(1234567,clienteDtoNuevo);
+            var validacion = service.EditarCliente(1234567, clienteDtoNuevo);
 
             Assert.That(validacion.Resultado, Is.True);
+            Assert.That(validacion.Errores, Is.Empty);
         }
         [Test]
         public void Update_Cliente_ShouldBeFalse()
@@ -149,6 +148,7 @@ namespace EmpresaEnvioTest
             var validacion = service.EditarCliente(123456789, clienteDtoNuevo);
 
             Assert.That(validacion.Resultado, Is.False);
+            Assert.That(validacion.Errores[0].ErrorDetail, Is.EqualTo("El cliente a editar no existe o fue eliminado"));
         }
     }
 }

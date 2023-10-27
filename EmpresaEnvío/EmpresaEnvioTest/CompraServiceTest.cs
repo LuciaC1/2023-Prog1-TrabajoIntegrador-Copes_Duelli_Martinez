@@ -1,10 +1,5 @@
 ﻿using EmpresaEnvÍoDto;
 using EmpresaEnvíoService;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmpresaEnvioTest
 {
@@ -43,7 +38,7 @@ namespace EmpresaEnvioTest
                 CodigoProducto = 1,
                 CantComprada = 3,
                 DNICliente = 1111,
-                FechaEntregaSolicitada= new DateTime().AddDays(6),
+                FechaEntregaSolicitada = new DateTime().AddDays(6),
             };
             ProductoDto productoDto = new ProductoDto()
             {
@@ -63,6 +58,7 @@ namespace EmpresaEnvioTest
             var validacion = compraService.RegistrarCompra(compraDto);
 
             Assert.That(validacion.Resultado, Is.True);
+            Assert.That(validacion.Errores, Is.Empty);
         }
         [Test]
         public void Add_Compra_ShouldBeFalse()
@@ -90,6 +86,7 @@ namespace EmpresaEnvioTest
             var validacion = compraService.RegistrarCompra(compraDto);
 
             Assert.That(validacion.Resultado, Is.False);
+            Assert.That(validacion.Errores[0].ErrorDetail, Is.EqualTo("El producto a comprar no existe"));
         }
     }
 }

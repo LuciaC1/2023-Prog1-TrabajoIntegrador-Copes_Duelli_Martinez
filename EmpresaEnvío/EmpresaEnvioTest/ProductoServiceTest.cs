@@ -1,11 +1,5 @@
-﻿using EmpresaEnvíoData;
-using EmpresaEnvÍoDto;
+﻿using EmpresaEnvÍoDto;
 using EmpresaEnvíoService;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmpresaEnvioTest
 {
@@ -38,6 +32,7 @@ namespace EmpresaEnvioTest
             var validacion = service.AñadirProducto(productoDto);
 
             Assert.That(validacion.Resultado, Is.True);
+            Assert.That(validacion.Errores, Is.Empty);
         }
         [Test]
         public void Add_Producto_ShouldBeFalse()
@@ -58,6 +53,7 @@ namespace EmpresaEnvioTest
             var validacion = service.AñadirProducto(productoDto);
 
             Assert.That(validacion.Resultado, Is.False);
+            Assert.That(validacion.Errores[0].ErrorDetail, Is.EqualTo("El stock mínimo debe ser mayor a cero"));
         }
         [Test]
         public void Update_Producto_ShouldBeTrue()
@@ -76,7 +72,7 @@ namespace EmpresaEnvioTest
             };
 
             service.AñadirProducto(productoDto);
-            var validacion = service.ActualizarStock(1,1);
+            var validacion = service.ActualizarStock(1, 1);
 
             Assert.That(validacion.Resultado, Is.True);
         }
@@ -100,6 +96,7 @@ namespace EmpresaEnvioTest
             var validacion = service.ActualizarStock(1, -1);
 
             Assert.That(validacion.Resultado, Is.False);
+            Assert.That(validacion.Errores[0].ErrorDetail, Is.EqualTo("El producto no puede tener un stock negativo"));
         }
     }
 }

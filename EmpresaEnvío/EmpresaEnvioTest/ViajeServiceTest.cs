@@ -1,10 +1,5 @@
 ﻿using EmpresaEnvÍoDto;
 using EmpresaEnvíoService;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmpresaEnvioTest
 {
@@ -232,6 +227,10 @@ namespace EmpresaEnvioTest
             var validacion = viajeService.ProgramarEnvío(DateTime.Now.AddMinutes(5), DateTime.Now.AddDays(7));
 
             Assert.That(validacion.Resultado, Is.True);
+            Assert.That(validacion.Viaje.Patente, Is.EqualTo("AA003OD"));
+            Assert.That(validacion.Viaje.CodigoUnicoViaje, Is.EqualTo(1));
+            Assert.That(validacion.Viaje.ListadoCompras.Count, Is.EqualTo(4));
+            Assert.That(validacion.Errores, Is.Empty);
         }
         [Test]
         public void Add_Viaje_ShouldBeFalse()
@@ -438,6 +437,7 @@ namespace EmpresaEnvioTest
             var validacion = viajeService.ProgramarEnvío(DateTime.Now.AddDays(1000), DateTime.Now.AddDays(1005));
 
             Assert.That(validacion.Resultado, Is.False);
+            Assert.That(validacion.Errores[0].ErrorDetail, Is.EqualTo("No hay compras listas para enviar"));
         }
     }
 }
