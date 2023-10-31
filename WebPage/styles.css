@@ -473,3 +473,17 @@ tr:first-child{
         margin-bottom: 30px;
     }
 }
+
+footer {
+    text-align: center;
+    padding: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: linear-gradient(to bottom, rgb(255, 255, 255,0.4) 0%, rgba(255, 255, 255, 0.1) 100%);
+    text-decoration: none;
+}
+
+
+
+
